@@ -1,0 +1,4308 @@
+basePath: /api
+definitions:
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.ChangePassword:
+    properties:
+      new_password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      old_password:
+        maxLength: 20
+        minLength: 1
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateCategory:
+    properties:
+      name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      slug:
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - name
+    - slug
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateLink:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      logo:
+        maxLength: 1000
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      sort_order:
+        maximum: 9999
+        minimum: 0
+        type: integer
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      url:
+        type: string
+    required:
+    - name
+    - status
+    - url
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreatePost:
+    properties:
+      author_id:
+        minimum: 1
+        type: integer
+      category_id:
+        minimum: 1
+        type: integer
+      content:
+        minLength: 1
+        type: string
+      excerpt:
+        maxLength: 500
+        type: string
+      featured_image:
+        maxLength: 1000
+        type: string
+      is_featured:
+        type: boolean
+      slug:
+        maxLength: 200
+        minLength: 1
+        type: string
+      status:
+        enum:
+        - draft
+        - published
+        - archived
+        type: string
+      tag_ids:
+        items:
+          type: integer
+        type: array
+      title:
+        maxLength: 200
+        minLength: 1
+        type: string
+    required:
+    - author_id
+    - category_id
+    - content
+    - slug
+    - status
+    - title
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateTag:
+    properties:
+      name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      slug:
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - name
+    - slug
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.GenerateSlug:
+    properties:
+      input:
+        maxLength: 200
+        minLength: 1
+        type: string
+    required:
+    - input
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.GenerateUploadURL:
+    properties:
+      content_type:
+        enum:
+        - image/jpeg
+        - image/png
+        - image/webp
+        type: string
+      expiry_seconds:
+        maximum: 86400
+        minimum: 1
+        type: integer
+      file_name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      file_size:
+        maximum: 10485760
+        minimum: 1
+        type: integer
+      resource_id:
+        minimum: 0
+        type: integer
+      upload_type:
+        enum:
+        - avatar
+        - post_cover
+        - post_content
+        type: string
+    required:
+    - content_type
+    - file_name
+    - file_size
+    - upload_type
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.Login:
+    properties:
+      otp_code:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 1
+        type: string
+      recovery_code:
+        maxLength: 64
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.ResetPassword:
+    properties:
+      new_password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      old_password:
+        maxLength: 20
+        minLength: 1
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - new_password
+    - old_password
+    - username
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.SendNotification:
+    properties:
+      content:
+        maxLength: 5000
+        minLength: 1
+        type: string
+      title:
+        maxLength: 200
+        minLength: 1
+        type: string
+      user_id:
+        minimum: 1
+        type: integer
+    required:
+    - content
+    - title
+    - user_id
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFAAuth:
+    properties:
+      code:
+        type: string
+      recovery_code:
+        maxLength: 64
+        minLength: 8
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFASetup:
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFAVerify:
+    properties:
+      code:
+        type: string
+      setup_id:
+        maxLength: 128
+        minLength: 16
+        type: string
+    required:
+    - code
+    - setup_id
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateCategory:
+    properties:
+      id:
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      slug:
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    - slug
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateCommentStatus:
+    properties:
+      id:
+        minimum: 1
+        type: integer
+      status:
+        enum:
+        - approved
+        - rejected
+        - spam
+        type: string
+    required:
+    - id
+    - status
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateFeedbackStatus:
+    properties:
+      id:
+        minimum: 1
+        type: integer
+      status:
+        enum:
+        - pending
+        - processing
+        - resolved
+        - closed
+        type: string
+    required:
+    - id
+    - status
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateLink:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      id:
+        minimum: 1
+        type: integer
+      logo:
+        maxLength: 1000
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      sort_order:
+        maximum: 9999
+        minimum: 0
+        type: integer
+      status:
+        enum:
+        - active
+        - inactive
+        type: string
+      url:
+        type: string
+    required:
+    - id
+    - name
+    - status
+    - url
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdatePost:
+    properties:
+      author_id:
+        minimum: 1
+        type: integer
+      category_id:
+        minimum: 1
+        type: integer
+      content:
+        type: string
+      excerpt:
+        maxLength: 500
+        type: string
+      featured_image:
+        maxLength: 1000
+        type: string
+      id:
+        minimum: 1
+        type: integer
+      is_featured:
+        type: boolean
+      slug:
+        maxLength: 200
+        type: string
+      status:
+        enum:
+        - draft
+        - published
+        - archived
+        type: string
+      tag_ids:
+        items:
+          type: integer
+        type: array
+      title:
+        maxLength: 200
+        type: string
+    required:
+    - id
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateProfile:
+    properties:
+      nickname:
+        maxLength: 100
+        minLength: 1
+        type: string
+      specialization:
+        maxLength: 200
+        minLength: 1
+        type: string
+    required:
+    - nickname
+    - specialization
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateTag:
+    properties:
+      id:
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      slug:
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    - slug
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateUserStatus:
+    properties:
+      id:
+        minimum: 1
+        type: integer
+      status:
+        enum:
+        - active
+        - disabled
+        type: string
+    required:
+    - id
+    - status
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpsertSiteSetting:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      is_public:
+        type: boolean
+      setting_key:
+        maxLength: 100
+        minLength: 1
+        type: string
+      setting_type:
+        enum:
+        - string
+        - number
+        - boolean
+        - json
+        type: string
+      setting_value:
+        maxLength: 10000
+        type: string
+    required:
+    - setting_key
+    - setting_type
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.AdminProfile:
+    properties:
+      nickname:
+        type: string
+      specialization:
+        type: string
+      twofa_enabled:
+        type: boolean
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.AuthorInfo:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      specialization:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseCategory:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseTag:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CategoryDetail:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      post_count:
+        type: integer
+      slug:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CategoryDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CategoryDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CommentDetail:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      ip_address:
+        type: string
+      likes:
+        type: integer
+      parent_id:
+        type: integer
+      post_id:
+        type: integer
+      replies_count:
+        type: integer
+      status:
+        type: string
+      updated_at:
+        type: string
+      user_agent:
+        type: string
+      user_id:
+        type: integer
+      user_profile:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserProfile'
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CommentDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CommentDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateCategory:
+    properties:
+      id:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateLink:
+    properties:
+      id:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreatePost:
+    properties:
+      id:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateTag:
+    properties:
+      id:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FeedbackDetail:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      ip_address:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+      subject:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      user_agent:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FeedbackDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FeedbackDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileDetail:
+    properties:
+      created_at:
+        type: string
+      file_name:
+        type: string
+      file_size:
+        type: integer
+      id:
+        type: integer
+      mime_type:
+        type: string
+      object_key:
+        type: string
+      resource_id:
+        type: integer
+      uploader_id:
+        type: integer
+      url:
+        type: string
+      usage:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileUploadURL:
+    properties:
+      expires:
+        type: integer
+      file_id:
+        type: integer
+      object_key:
+        type: string
+      upload_url:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.GenerateSlug:
+    properties:
+      slug:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.LinkDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      logo:
+        type: string
+      name:
+        type: string
+      sort_order:
+        type: integer
+      status:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.LinkDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.LinkDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.Login:
+    properties:
+      otp_required:
+        type: boolean
+      requires_reset:
+        type: boolean
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostDetail:
+    properties:
+      author:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.AuthorInfo'
+      author_id:
+        type: integer
+      category:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseCategory'
+      content:
+        type: string
+      created_at:
+        type: string
+      excerpt:
+        type: string
+      featured_image:
+        type: string
+      id:
+        type: integer
+      is_featured:
+        type: boolean
+      likes:
+        type: integer
+      meta_description:
+        type: string
+      meta_title:
+        type: string
+      published_at:
+        type: string
+      read_time:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseTag'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+      views:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostSummary:
+    properties:
+      author:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.AuthorInfo'
+      author_id:
+        type: integer
+      category:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseCategory'
+      created_at:
+        type: string
+      excerpt:
+        type: string
+      featured_image:
+        type: string
+      id:
+        type: integer
+      is_featured:
+        type: boolean
+      likes:
+        type: integer
+      published_at:
+        type: string
+      read_time:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.BaseTag'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+      views:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostSummaryPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostSummary'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.ResetRecoveryCodes:
+    properties:
+      recovery_codes:
+        items:
+          type: string
+        type: array
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.SiteSettingDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      is_public:
+        type: boolean
+      setting_key:
+        type: string
+      setting_type:
+        type: string
+      setting_value:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TagDetail:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      post_count:
+        type: integer
+      slug:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TagDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TagDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TwoFASetupStart:
+    properties:
+      qrcode_image_base64:
+        type: string
+      secret:
+        type: string
+      setup_id:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TwoFAVerifyResult:
+    properties:
+      enabled:
+        type: boolean
+      recovery_codes:
+        items:
+          type: string
+        type: array
+      relogin_required:
+        type: boolean
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserDetail:
+    properties:
+      auth_openid:
+        type: string
+      auth_provider:
+        type: string
+      avatar:
+        type: string
+      bio:
+        type: string
+      blog_url:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      email_verified:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      show_full_profile:
+        type: boolean
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserProfile:
+    properties:
+      avatar:
+        type: string
+      bio:
+        type: string
+      blog_url:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope:
+    properties:
+      code:
+        example: "0000"
+        type: string
+      data: {}
+      message:
+        example: ok
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.ChangePassword:
+    properties:
+      new_password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      old_password:
+        maxLength: 20
+        minLength: 1
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.ForgotPassword:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+      new_password:
+        maxLength: 20
+        minLength: 8
+        type: string
+    required:
+    - code
+    - email
+    - new_password
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.Login:
+    properties:
+      captcha:
+        type: string
+      captcha_id:
+        maxLength: 64
+        minLength: 1
+        type: string
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 1
+        type: string
+    required:
+    - captcha
+    - captcha_id
+    - email
+    - password
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.Register:
+    properties:
+      code:
+        type: string
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 2
+        type: string
+    required:
+    - code
+    - email
+    - password
+    - username
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SendCode:
+    properties:
+      captcha:
+        maxLength: 10
+        minLength: 4
+        type: string
+      captcha_id:
+        maxLength: 64
+        minLength: 1
+        type: string
+      email:
+        type: string
+    required:
+    - captcha
+    - captcha_id
+    - email
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SubmitComment:
+    properties:
+      content:
+        maxLength: 5000
+        minLength: 1
+        type: string
+      parent_id:
+        type: integer
+    required:
+    - content
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SubmitFeedback:
+    properties:
+      email:
+        type: string
+      message:
+        maxLength: 5000
+        minLength: 1
+        type: string
+      name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      subject:
+        maxLength: 200
+        minLength: 1
+        type: string
+      type:
+        enum:
+        - general
+        - bug
+        - feature
+        - ui
+        type: string
+    required:
+    - email
+    - message
+    - name
+    - subject
+    - type
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.UpdateProfile:
+    properties:
+      bio:
+        maxLength: 500
+        type: string
+      blog_url:
+        maxLength: 500
+        type: string
+      name:
+        maxLength: 50
+        type: string
+      region:
+        maxLength: 100
+        type: string
+      show_full_profile:
+        type: boolean
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.AuthorInfo:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      specialization:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseCategory:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseTag:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Captcha:
+    properties:
+      captcha_id:
+        type: string
+      pic_path:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CategoryDetail:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      post_count:
+        type: integer
+      slug:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CommentBasic:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      like:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+      parent_id:
+        type: integer
+      post_id:
+        type: integer
+      replies_count:
+        type: integer
+      user_id:
+        type: integer
+      user_profile:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CommentUserProfile'
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CommentUserProfile:
+    properties:
+      avatar:
+        type: string
+      bio:
+        type: string
+      blog_url:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo:
+    properties:
+      liked:
+        type: boolean
+      likes:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LinkDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      logo:
+        type: string
+      name:
+        type: string
+      sort_order:
+        type: integer
+      status:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Login:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      token_type:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetail:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_read:
+        type: boolean
+      reference_id:
+        type: integer
+      reference_type:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetailPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetail'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostDetail:
+    properties:
+      author:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.AuthorInfo'
+      author_id:
+        type: integer
+      category:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseCategory'
+      content:
+        type: string
+      created_at:
+        type: string
+      excerpt:
+        type: string
+      featured_image:
+        type: string
+      id:
+        type: integer
+      is_featured:
+        type: boolean
+      like:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+      meta_description:
+        type: string
+      meta_title:
+        type: string
+      published_at:
+        type: string
+      read_time:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseTag'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+      views:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostSummary:
+    properties:
+      author:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.AuthorInfo'
+      author_id:
+        type: integer
+      category:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseCategory'
+      created_at:
+        type: string
+      excerpt:
+        type: string
+      featured_image:
+        type: string
+      id:
+        type: integer
+      is_featured:
+        type: boolean
+      like:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+      published_at:
+        type: string
+      read_time:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.BaseTag'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+      views:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostSummaryPage:
+    properties:
+      current_page:
+        type: integer
+      list:
+        items:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostSummary'
+        type: array
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Refresh:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Register:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      token_type:
+        type: string
+      user:
+        $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_usecase_output.UserDetail'
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.SiteSettingDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      is_public:
+        type: boolean
+      setting_key:
+        type: string
+      setting_type:
+        type: string
+      setting_value:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.TagDetail:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      post_count:
+        type: integer
+      slug:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UnreadCount:
+    properties:
+      count:
+        type: integer
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UserProfile:
+    properties:
+      avatar:
+        type: string
+      bio:
+        type: string
+      blog_url:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      email_verified:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      show_full_profile:
+        type: boolean
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_scc749_nimbus-blog-api_internal_usecase_output.UserDetail:
+    properties:
+      auth_openid:
+        type: string
+      auth_provider:
+        type: string
+      avatar:
+        type: string
+      bio:
+        type: string
+      blog_url:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      email_verified:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      show_full_profile:
+        type: boolean
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Nimbus Blog 后端 API（Admin + Public V1）。
+  title: Nimbus Blog API
+  version: "1.0"
+paths:
+  /admin/auth/2fa/disable:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 验证信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFAAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 禁用 2FA
+      tags:
+      - Admin.Auth
+  /admin/auth/2fa/recovery/reset:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 验证信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFAAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.ResetRecoveryCodes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 重置 2FA Recovery Codes
+      tags:
+      - Admin.Auth
+  /admin/auth/2fa/setup:
+    post:
+      consumes:
+      - application/json
+      description: 仅生成密钥与二维码并缓存（返回 setup_id）；不会写入数据库。前端需调用 /2fa/verify 完成启用。
+      parameters:
+      - description: 空对象
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFASetup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TwoFASetupStart'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 生成/刷新 2FA 配置
+      tags:
+      - Admin.Auth
+  /admin/auth/2fa/verify:
+    post:
+      consumes:
+      - application/json
+      description: 使用 setup_id 从缓存读取密钥验证 OTP，验证通过后写入数据库、生成恢复码并销毁会话。
+      parameters:
+      - description: 验证码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.TwoFAVerify'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TwoFAVerifyResult'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 校验并启用 2FA
+      tags:
+      - Admin.Auth
+  /admin/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录成功后通过 Cookie 写入 AdminSession（fiber_session）。
+      parameters:
+      - description: 登录信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.Login'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 管理员登录
+      tags:
+      - Admin.Auth
+  /admin/auth/logout:
+    post:
+      description: 清理 AdminSession Cookie（若存在）。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 管理员登出
+      tags:
+      - Admin.Auth
+  /admin/auth/password:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 密码信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 管理员修改密码
+      tags:
+      - Admin.Auth
+  /admin/auth/profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.AdminProfile'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 获取管理员资料
+      tags:
+      - Admin.Auth
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资料信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新管理员资料
+      tags:
+      - Admin.Auth
+  /admin/auth/reset:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 重置信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.ResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 管理员重置密码
+      tags:
+      - Admin.Auth
+  /admin/comments/:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 排序字段
+        enum:
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 状态过滤
+        in: query
+        name: filter.status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CommentDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 评论列表
+      tags:
+      - Admin.Comments
+  /admin/comments/{id}:
+    delete:
+      parameters:
+      - description: 评论 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除评论
+      tags:
+      - Admin.Comments
+  /admin/comments/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 评论 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 状态信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateCommentStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新评论状态
+      tags:
+      - Admin.Comments
+  /admin/content/categories:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 排序字段
+        enum:
+        - name
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CategoryDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 分类列表（管理端）
+      tags:
+      - Admin.Content
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分类信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateCategory'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 创建分类
+      tags:
+      - Admin.Content
+  /admin/content/categories/{id}:
+    delete:
+      parameters:
+      - description: 分类 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除分类
+      tags:
+      - Admin.Content
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分类 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 分类信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新分类
+      tags:
+      - Admin.Content
+  /admin/content/generate-slug:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 输入文本
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.GenerateSlug'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.GenerateSlug'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 生成 slug
+      tags:
+      - Admin.Content
+  /admin/content/posts:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 排序字段
+        enum:
+        - created_at
+        - updated_at
+        - views
+        - likes
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 分类 ID 过滤
+        in: query
+        name: filter.category_id
+        type: string
+      - description: 标签 ID 过滤
+        in: query
+        name: filter.tag_id
+        type: string
+      - description: 状态过滤
+        in: query
+        name: filter.status
+        type: string
+      - description: 是否精选过滤
+        in: query
+        name: filter.is_featured
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostSummaryPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 文章列表（管理端）
+      tags:
+      - Admin.Content
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreatePost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreatePost'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 创建文章
+      tags:
+      - Admin.Content
+  /admin/content/posts/{id}:
+    delete:
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除文章
+      tags:
+      - Admin.Content
+    get:
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.PostDetail'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 文章详情（按 ID）
+      tags:
+      - Admin.Content
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文章内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdatePost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新文章
+      tags:
+      - Admin.Content
+  /admin/content/tags:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 排序字段
+        enum:
+        - name
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.TagDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 标签列表（管理端）
+      tags:
+      - Admin.Content
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateTag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateTag'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 创建标签
+      tags:
+      - Admin.Content
+  /admin/content/tags/{id}:
+    delete:
+      parameters:
+      - description: 标签 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除标签
+      tags:
+      - Admin.Content
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 标签信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateTag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新标签
+      tags:
+      - Admin.Content
+  /admin/feedbacks/:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 排序字段
+        enum:
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 状态过滤
+        in: query
+        name: filter.status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FeedbackDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 反馈列表
+      tags:
+      - Admin.Feedbacks
+  /admin/feedbacks/{id}:
+    delete:
+      parameters:
+      - description: 反馈 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除反馈
+      tags:
+      - Admin.Feedbacks
+    get:
+      parameters:
+      - description: 反馈 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FeedbackDetail'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 反馈详情
+      tags:
+      - Admin.Feedbacks
+  /admin/feedbacks/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 反馈 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 状态信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateFeedbackStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新反馈状态
+      tags:
+      - Admin.Feedbacks
+  /admin/files/:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 排序字段
+        enum:
+        - created_at
+        - file_size
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 用途过滤
+        in: query
+        name: filter.usage
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 文件列表
+      tags:
+      - Admin.Files
+  /admin/files/{object_key}:
+    delete:
+      parameters:
+      - description: 对象 Key
+        in: path
+        name: object_key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除文件
+      tags:
+      - Admin.Files
+  /admin/files/upload-url:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 上传参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.GenerateUploadURL'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.FileUploadURL'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 生成文件上传 URL
+      tags:
+      - Admin.Files
+  /admin/links/:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 排序字段
+        enum:
+        - sort_order
+        - created_at
+        - name
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.LinkDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 友链列表
+      tags:
+      - Admin.Links
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 友链信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.CreateLink'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.CreateLink'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 创建友链
+      tags:
+      - Admin.Links
+  /admin/links/{id}:
+    delete:
+      parameters:
+      - description: 友链 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 删除友链
+      tags:
+      - Admin.Links
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 友链 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 友链信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateLink'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新友链
+      tags:
+      - Admin.Links
+  /admin/notifications/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 通知内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.SendNotification'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 发送通知
+      tags:
+      - Admin.Notifications
+  /admin/settings/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.SiteSettingDetail'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 设置列表
+      tags:
+      - Admin.Settings
+  /admin/settings/{key}:
+    get:
+      parameters:
+      - description: 设置 Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.SiteSettingDetail'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 获取设置（按 key）
+      tags:
+      - Admin.Settings
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 设置 Key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: 设置内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpsertSiteSetting'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: Upsert 设置（按 key）
+      tags:
+      - Admin.Settings
+  /admin/users/:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 排序字段
+        enum:
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 状态过滤
+        in: query
+        name: filter.status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_response.UserDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 用户列表
+      tags:
+      - Admin.Users
+  /admin/users/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 状态信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_admin_request.UpdateUserStatus'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - AdminSession: []
+      summary: 更新用户状态
+      tags:
+      - Admin.Users
+  /v1/auth/forgot:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 邮箱验证码与新密码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.ForgotPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 忘记密码
+      tags:
+      - V1.Auth
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录成功后通过 HttpOnly Cookie 写入 refresh_token，同时响应体返回 access_token。
+      parameters:
+      - description: 登录信息（含图形验证码）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Login'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 用户登录
+      tags:
+      - V1.Auth
+  /v1/auth/logout:
+    post:
+      description: 需要 BearerAuth（由路由层鉴权）；接口会清空 refresh_token Cookie。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 退出登录
+      tags:
+      - V1.Auth
+  /v1/auth/refresh:
+    post:
+      description: 读取 refresh_token Cookie，返回新的 access_token，并刷新 refresh_token Cookie。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Refresh'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 刷新令牌
+      tags:
+      - V1.Auth
+  /v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 注册信息（含邮箱验证码）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Register'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 用户注册
+      tags:
+      - V1.Auth
+  /v1/captcha/generate:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.Captcha'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 生成验证码
+      tags:
+      - V1.Captcha
+  /v1/comments/{id}:
+    delete:
+      parameters:
+      - description: 评论 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 删除自己的评论
+      tags:
+      - V1.Comments
+  /v1/comments/{id}/likes:
+    delete:
+      parameters:
+      - description: 评论 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 取消点赞评论
+      tags:
+      - V1.Comments
+    post:
+      parameters:
+      - description: 评论 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 点赞/取消点赞评论
+      tags:
+      - V1.Comments
+  /v1/content/categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CategoryDetail'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 分类列表
+      tags:
+      - V1.Content
+  /v1/content/posts:
+    get:
+      description: 可选携带 BearerAuth，以返回点赞状态（like.liked）。
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 分类 ID 过滤
+        in: query
+        name: filter.category_id
+        type: string
+      - description: 标签 ID 过滤
+        in: query
+        name: filter.tag_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostSummaryPage'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 文章列表
+      tags:
+      - V1.Content
+  /v1/content/posts/{id}/comments:
+    get:
+      description: 可选携带 BearerAuth，以返回点赞状态（like.liked）。
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.CommentBasic'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 文章评论列表
+      tags:
+      - V1.Comments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 评论内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SubmitComment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 提交评论
+      tags:
+      - V1.Comments
+  /v1/content/posts/{id}/likes:
+    delete:
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 取消点赞文章
+      tags:
+      - V1.Content
+    post:
+      parameters:
+      - description: 文章 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LikeInfo'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 点赞/取消点赞文章
+      tags:
+      - V1.Content
+  /v1/content/posts/{slug}:
+    get:
+      description: 可选携带 BearerAuth，以返回点赞状态（like.liked）。
+      parameters:
+      - description: 文章 Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.PostDetail'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 文章详情（按 slug）
+      tags:
+      - V1.Content
+  /v1/content/tags:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.TagDetail'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 标签列表
+      tags:
+      - V1.Content
+  /v1/email/send-code:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 邮箱与图形验证码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SendCode'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 发送邮箱验证码
+      tags:
+      - V1.Email
+  /v1/feedbacks:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 反馈内容
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.SubmitFeedback'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 提交反馈
+      tags:
+      - V1.Feedbacks
+  /v1/files/{object_key}:
+    get:
+      parameters:
+      - description: 对象 Key
+        in: path
+        name: object_key
+        required: true
+        type: string
+      responses:
+        "307":
+          description: Temporary Redirect
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 获取文件临时访问 URL（重定向）
+      tags:
+      - V1.Files
+  /v1/links:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.LinkDetail'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 友链列表
+      tags:
+      - V1.Links
+  /v1/notifications:
+    get:
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      - description: 排序字段
+        enum:
+        - created_at
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: 排序方向
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+      - description: 是否已读过滤
+        in: query
+        name: filter.is_read
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetailPage'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 通知列表
+      tags:
+      - V1.Notifications
+  /v1/notifications/{id}:
+    delete:
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 删除通知
+      tags:
+      - V1.Notifications
+  /v1/notifications/{id}/read:
+    put:
+      parameters:
+      - description: 通知 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 标记通知已读
+      tags:
+      - V1.Notifications
+  /v1/notifications/read-all:
+    put:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 标记全部通知已读
+      tags:
+      - V1.Notifications
+  /v1/notifications/stream:
+    get:
+      description: 使用 Query Token 鉴权（token=access_token），返回 text/event-stream。
+      parameters:
+      - description: Access Token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: SSE stream
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 通知 SSE 流
+      tags:
+      - V1.Notifications
+  /v1/notifications/unread:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UnreadCount'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 未读通知数量
+      tags:
+      - V1.Notifications
+  /v1/settings:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.SiteSettingDetail'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      summary: 站点设置（公开）
+      tags:
+      - V1.Settings
+  /v1/user/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UserProfile'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 获取当前用户信息
+      tags:
+      - V1.User
+  /v1/user/password:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 密码信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 修改密码
+      tags:
+      - V1.User
+  /v1/user/profile:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 资料信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_request.UpdateProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_shared.Envelope'
+      security:
+      - BearerAuth: []
+      summary: 更新个人资料
+      tags:
+      - V1.User
+schemes:
+- http
+- https
+securityDefinitions:
+  AdminSession:
+    in: cookie
+    name: fiber_session
+    type: apiKey
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

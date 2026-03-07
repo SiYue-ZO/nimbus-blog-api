@@ -1,0 +1,69 @@
+app:
+  name: nimbus-blog
+  version: 1.0.0
+
+log:
+  level: debug
+
+http:
+  port: 8080
+  use_prefork_mode: false
+
+postgres:
+  host: localhost
+  port: 5432
+  user: user
+  password: myp455w0rd
+  dbname: blog_db
+  sslmode: disable
+  time_zone: Asia/Shanghai
+  max_idle_conns: 10
+  max_open_conns: 100
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+
+minio:
+  endpoint: localhost:9000
+  access_key: admin
+  secret_key: admin123456
+  use_ssl: false
+  bucket: nimbus-files
+  region: ""
+
+captcha:
+  height: 80
+  width: 240
+  length: 6
+  max_skew: 0.7
+  dot_count: 80
+
+smtp:
+  host: smtp.qq.com
+  port: 465
+  username: Nimbus Blog
+  password: xxxxxxxxxxxxxxxx
+  from: 1234567890@qq.com
+
+jwt:
+  access_secret: FA8edP7T73-9IUGPTrPn407XAUC0Dsx99a4EQFezQR4
+  refresh_secret: F2p2Ylx4T4txPD9VroC_DEIHdGqZ-AEKAsDdSMd9FQNHgSI7NrribSnVJT_iI0IfpgwMjXhd4fnGg_h4nqPwjA
+  access_ttl: 15m
+  refresh_ttl: 168h
+  issuer: nimbus-blog
+
+twofa:
+  qr_width: 200
+  qr_height: 200
+  encryption_key: IoqG8Y89rWbkhzV3SaFIW9nSTAH1RtifrTTJNcCzCuM=
+
+openai:
+  api_key: sk-abcde12345abcde12345abcde12345ab
+  base_url: https://api.deepseek.com
+  model: deepseek-chat
+
+swagger:
+  enabled: false
