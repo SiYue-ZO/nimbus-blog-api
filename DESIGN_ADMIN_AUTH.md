@@ -36,7 +36,19 @@ controller/http/middleware (AdminSession)
 
 相关实现：
 - Session 初始化：[router.go](internal/controller/http/router.go#L42-L58)
-- AdminSession 中间件：[admin_session.go](internal/controller/http/middleware/admin_session.go#L12-L26)
+- AdminSession 中间件：[admin_session.go](internal/controller/http/middleware/admin_session.go#L1-L27)
+
+示例（Session 初始化片段）：
+
+```go
+// internal/controller/http/router.go
+rs := redisstore.New(redisstore.Config{
+    Host: cfg.Redis.Host, Port: cfg.Redis.Port, Password: cfg.Redis.Password, Database: cfg.Redis.DB,
+})
+store := session.NewStore(session.Config{
+    Storage: rs, CookieHTTPOnly: true, CookieSecure: true, CookieSameSite: "Strict", IdleTimeout: 24 * time.Hour,
+})
+```
 
 ### 2.2 Session 字段
 
@@ -63,7 +75,7 @@ controller/http/middleware (AdminSession)
 - 请求 DTO：[request/auth.go](internal/controller/http/admin/request/auth.go#L1-L36)
   - `username/password`
   - 可选：`otp_code`、`recovery_code`
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L17-L111)
+- Handler：[admin/auth.go:login](internal/controller/http/admin/auth.go#L29-L111)
 
 ### 4.2 流程
 
@@ -93,23 +105,23 @@ controller/http/middleware (AdminSession)
 
 - `POST /api/admin/auth/reset`
 - 逻辑：先用 `Login(username, old_password)` 验证，再 `ChangePassword(ClearResetFlag=true)`
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L113-L187)
+- Handler：[admin/auth.go:resetPassword](internal/controller/http/admin/auth.go#L124-L187)
 
 ### 5.2 在线修改密码（change)
 
 - `PUT /api/admin/auth/password`
 - 前置：AdminSession 中间件（从 locals 取 `admin_id`）
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L189-L247)
+- Handler：[admin/auth.go:changePassword](internal/controller/http/admin/auth.go#L201-L254)
 
 ## 六、2FA（TOTP + setup 缓存 + recovery codes）
 
 ### 6.1 存储策略
 
 - 数据库：`admins.two_factor_secret` 保存“加密后的 secret”
-  - 加密实现：[crypto.go](internal/usecase/auth/admin/crypto.go#L12-L54)
+  - 加密实现：[crypto.go](internal/usecase/auth/admin/crypto.go#L1-L54)
 - setup 缓存：Redis 保存 `{admin_id, secret}`，TTL 10 分钟
   - key：`admin_2fa_setup:{setup_id}`
-  - 实现：[admin_twofa_setup_store_redis.go](internal/repo/cache/admin_twofa_setup_store_redis.go#L14-L56)
+  - 实现：[admin_twofa_setup_store_redis.go](internal/repo/cache/admin_twofa_setup_store_redis.go#L1-L56)
 
 ### 6.2 启用 2FA：setup → verify
 
@@ -117,7 +129,7 @@ controller/http/middleware (AdminSession)
 
 - `POST /api/admin/auth/2fa/setup`
 - 行为：生成 `secret` 与二维码（base64），写入 setup 缓存并返回 `setup_id`
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L354-L409)
+- Handler：[admin/auth.go:twoFASetup](internal/controller/http/admin/auth.go#L367-L423)
 
 #### (2) verify
 
@@ -128,22 +140,22 @@ controller/http/middleware (AdminSession)
   - 生成 8 个 recovery codes，并以 bcrypt hash 形式写入 DB
   - 删除 setup 缓存
   - 销毁当前 AdminSession（要求重新登录）
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L411-L477)
+- Handler：[admin/auth.go:twoFAVerify](internal/controller/http/admin/auth.go#L424-L490)
 
 ### 6.3 禁用 2FA
 
 - `POST /api/admin/auth/2fa/disable`
 - 必须提供 `code` 或 `recovery_code` 之一；验证通过后清空 DB 中的 `two_factor_secret`
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L479-L550)
+- Handler：[admin/auth.go:twoFADisable](internal/controller/http/admin/auth.go#L491-L550)
 
 ### 6.4 重置 recovery codes
 
 - `POST /api/admin/auth/2fa/recovery/reset`
 - 必须提供 `code` 或 `recovery_code` 之一；验证通过后重新生成并覆盖 recovery codes
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L552-L626)
+- Handler：[admin/auth.go:twoFARecoveryReset](internal/controller/http/admin/auth.go#L564-L626)
 
 ## 七、登出
 
 - `POST /api/admin/auth/logout`
 - 行为：尝试 `sess.Destroy()`（若 session 不存在也返回成功）
-- Handler：[auth.go](internal/controller/http/admin/auth.go#L249-L261)
+- Handler：[admin/auth.go:logout](internal/controller/http/admin/auth.go#L255-L266)

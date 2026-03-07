@@ -98,83 +98,84 @@ Hub 是 SSE 的核心基础设施，放在 `pkg/ssehub/` 下，无任何 `intern
 
 ### 4.1 文件
 
-`pkg/ssehub/hub.go`
+[`hub.go`](pkg/ssehub/hub.go#L1-L74)
 
 ### 4.2 实现
 
 ```go
+// Package ssehub SSE Hub（内存级连接管理与事件推送）。
 package ssehub
 
 import "sync"
 
 const _defaultBufferSize = 16
 
-// Event 是推送给前端的 SSE 事件
+// Event SSE 事件。
 type Event struct {
-    Name string // event 字段（如 "notification"、"unread_count"）
-    Data []byte // data 字段（JSON）
+	Name string
+	Data []byte
 }
 
-// Hub 管理所有活跃的 SSE 客户端连接
+// Hub SSE Hub。
 type Hub struct {
-    mu      sync.RWMutex
-    clients map[int64]map[chan Event]struct{}
+	mu      sync.RWMutex
+	clients map[int64]map[chan Event]struct{}
 }
 
+// New 创建 Hub。
 func New() *Hub {
-    return &Hub{clients: make(map[int64]map[chan Event]struct{})}
+	return &Hub{clients: make(map[int64]map[chan Event]struct{})}
 }
 
-// Subscribe 注册 SSE 连接，返回事件 channel
+// Subscribe 订阅指定用户的事件通道。
 func (h *Hub) Subscribe(userID int64) chan Event {
-    ch := make(chan Event, _defaultBufferSize)
-    h.mu.Lock()
-    if h.clients[userID] == nil {
-        h.clients[userID] = make(map[chan Event]struct{})
-    }
-    h.clients[userID][ch] = struct{}{}
-    h.mu.Unlock()
-    return ch
+	ch := make(chan Event, _defaultBufferSize)
+	h.mu.Lock()
+	if h.clients[userID] == nil {
+		h.clients[userID] = make(map[chan Event]struct{})
+	}
+	h.clients[userID][ch] = struct{}{}
+	h.mu.Unlock()
+	return ch
 }
 
-// Unsubscribe 移除 SSE 连接并关闭 channel
+// Unsubscribe 取消订阅并关闭事件通道。
 func (h *Hub) Unsubscribe(userID int64, ch chan Event) {
-    h.mu.Lock()
-    if conns, ok := h.clients[userID]; ok {
-        delete(conns, ch)
-        if len(conns) == 0 {
-            delete(h.clients, userID)
-        }
-    }
-    h.mu.Unlock()
-    close(ch)
+	h.mu.Lock()
+	if conns, ok := h.clients[userID]; ok {
+		delete(conns, ch)
+		if len(conns) == 0 {
+			delete(h.clients, userID)
+		}
+	}
+	h.mu.Unlock()
+	close(ch)
 }
 
-// Publish 向指定用户的所有连接广播事件
+// Publish 向指定用户推送事件。
 func (h *Hub) Publish(userID int64, event Event) {
-    h.mu.RLock()
-    conns := h.clients[userID]
-    h.mu.RUnlock()
+	h.mu.RLock()
+	conns := h.clients[userID]
+	h.mu.RUnlock()
 
-    for ch := range conns {
-        select {
-        case ch <- event:
-        default:
-            // 缓冲区满 → 静默丢弃，不阻塞业务流程
-        }
-    }
+	for ch := range conns {
+		select {
+		case ch <- event:
+		default:
+		}
+	}
 }
 
-// Shutdown 关闭所有连接（优雅停机）
+// Shutdown 关闭 Hub 并清理所有订阅。
 func (h *Hub) Shutdown() {
-    h.mu.Lock()
-    defer h.mu.Unlock()
-    for uid, conns := range h.clients {
-        for ch := range conns {
-            close(ch)
-        }
-        delete(h.clients, uid)
-    }
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	for uid, conns := range h.clients {
+		for ch := range conns {
+			close(ch)
+		}
+		delete(h.clients, uid)
+	}
 }
 ```
 
@@ -189,25 +190,31 @@ func (h *Hub) Shutdown() {
 
 ## 五、Entity 层
 
-`internal/entity/notification.go`
+[`notification.go`](internal/entity/notification.go#L1-L29)
 
 ```go
 package entity
 
 import (
-    "encoding/json"
-    "time"
+	"encoding/json"
+	"time"
+)
+
+const (
+	NotificationTypeCommentReply    = "comment_reply"
+	NotificationTypeCommentApproved = "comment_approved"
+	NotificationTypeAdminMessage    = "admin_message"
 )
 
 type Notification struct {
-    ID            int64
-    UserID        int64
-    Type          string
-    Title         string
-    Content       string
-    Meta          json.RawMessage
-    IsRead        bool
-    CreatedAt     time.Time
+	ID        int64
+	UserID    int64
+	Type      string
+	Title     string
+	Content   string
+	Meta      json.RawMessage
+	IsRead    bool
+	CreatedAt time.Time
 }
 ```
 
@@ -219,23 +226,20 @@ type Notification struct {
 
 ### 6.1 接口定义
 
-在 `internal/repo/contracts.go` 中新增两个接口：
+接口定义见：[contracts.go](internal/repo/contracts.go#L169-L181)
 
 ```go
-// NotificationRepo 通知表 CRUD
 NotificationRepo interface {
-    Create(ctx context.Context, n entity.Notification) (int64, error)
-    List(ctx context.Context, offset, limit int, userID int64, isRead *bool, sortBy *string, order *string) ([]*entity.Notification, int64, error)
-    MarkRead(ctx context.Context, id, userID int64) error
-    MarkAllRead(ctx context.Context, userID int64) error
-    CountUnread(ctx context.Context, userID int64) (int64, error)
-    Delete(ctx context.Context, id, userID int64) error
+	Create(ctx context.Context, n entity.Notification) (int64, error)
+	List(ctx context.Context, offset, limit int, userID int64, isRead *bool, sortBy *string, order *string) ([]*entity.Notification, int64, error)
+	MarkRead(ctx context.Context, id, userID int64) error
+	MarkAllRead(ctx context.Context, userID int64) error
+	CountUnread(ctx context.Context, userID int64) (int64, error)
+	Delete(ctx context.Context, id, userID int64) error
 }
 
-// Notifier 通知发送（DB 持久化 + SSE 推送）
-// 定位类似 EmailSender — 一个"发送侧效"的 Repo 级抽象
 Notifier interface {
-    Send(ctx context.Context, n entity.Notification) error
+	Send(ctx context.Context, n entity.Notification) error
 }
 ```
 
@@ -248,106 +252,134 @@ Notifier interface {
 
 ### 6.2 NotificationRepo 实现
 
-`internal/repo/persistence/notification_postgres_gen.go`
+[`notification_postgres_gen.go`](internal/repo/persistence/notification_postgres_gen.go#L1-L120)
 
 ```go
 package persistence
 
 import (
-    "context"
-    "strings"
+	"context"
+	"encoding/json"
+	"strings"
 
-    "github.com/scc749/nimbus-blog-api/internal/entity"
-    "github.com/scc749/nimbus-blog-api/internal/repo"
-    "github.com/scc749/nimbus-blog-api/internal/repo/persistence/gen/model"
-    "github.com/scc749/nimbus-blog-api/internal/repo/persistence/gen/query"
-    "gorm.io/gorm"
+	"github.com/scc749/nimbus-blog-api/internal/entity"
+	"github.com/scc749/nimbus-blog-api/internal/repo"
+	"github.com/scc749/nimbus-blog-api/internal/repo/persistence/gen/model"
+	"github.com/scc749/nimbus-blog-api/internal/repo/persistence/gen/query"
+	"gorm.io/gorm"
 )
 
 type notificationRepo struct {
-    query *query.Query
+	query *query.Query
 }
 
 func NewNotificationRepo(db *gorm.DB) repo.NotificationRepo {
-    return &notificationRepo{query: query.Use(db)}
+	return &notificationRepo{query: query.Use(db)}
 }
 
 func (r *notificationRepo) Create(ctx context.Context, en entity.Notification) (int64, error) {
-    mn := toModelNotification(&en)
-    if err := r.query.Notification.WithContext(ctx).Create(mn); err != nil {
-        return 0, err
-    }
-    return mn.ID, nil
+	mn := toModelNotification(&en)
+	if err := r.query.Notification.WithContext(ctx).Create(mn); err != nil {
+		return 0, err
+	}
+	return mn.ID, nil
 }
 
 func (r *notificationRepo) List(ctx context.Context, offset, limit int, userID int64, isRead *bool, sortBy *string, order *string) ([]*entity.Notification, int64, error) {
-    n := r.query.Notification
-    do := n.WithContext(ctx).Where(n.UserID.Eq(userID))
+	n := r.query.Notification
+	do := n.WithContext(ctx).Where(n.UserID.Eq(userID))
 
-    if isRead != nil {
-        do = do.Where(n.IsRead.Is(*isRead))
-    }
+	if isRead != nil {
+		do = do.Where(n.IsRead.Is(*isRead))
+	}
 
-    total, err := do.Count()
-    if err != nil {
-        return nil, 0, err
-    }
+	total, err := do.Count()
+	if err != nil {
+		return nil, 0, err
+	}
 
-    if sortBy != nil && *sortBy != "" {
-        orderField, ok := n.GetFieldByName(*sortBy)
-        if ok {
-            if order != nil && strings.EqualFold(*order, "asc") {
-                do = do.Order(orderField)
-            } else {
-                do = do.Order(orderField.Desc())
-            }
-        }
-    } else {
-        do = do.Order(n.CreatedAt.Desc())
-    }
+	if sortBy != nil && *sortBy != "" {
+		orderField, ok := n.GetFieldByName(*sortBy)
+		if ok {
+			if order != nil && strings.EqualFold(*order, "asc") {
+				do = do.Order(orderField)
+			} else {
+				do = do.Order(orderField.Desc())
+			}
+		}
+	} else {
+		do = do.Order(n.CreatedAt.Desc())
+	}
 
-    rows, err := do.Offset(offset).Limit(limit).Find()
-    if err != nil {
-        return nil, 0, err
-    }
+	rows, err := do.Offset(offset).Limit(limit).Find()
+	if err != nil {
+		return nil, 0, err
+	}
 
-    items := make([]*entity.Notification, len(rows))
-    for i, mn := range rows {
-        items[i] = toEntityNotification(mn)
-    }
-    return items, total, nil
+	items := make([]*entity.Notification, len(rows))
+	for i, mn := range rows {
+		items[i] = toEntityNotification(mn)
+	}
+	return items, total, nil
 }
 
 func (r *notificationRepo) CountUnread(ctx context.Context, userID int64) (int64, error) {
-    n := r.query.Notification
-    return n.WithContext(ctx).Where(n.UserID.Eq(userID), n.IsRead.Is(false)).Count()
+	n := r.query.Notification
+	return n.WithContext(ctx).Where(n.UserID.Eq(userID), n.IsRead.Is(false)).Count()
 }
 
 func (r *notificationRepo) MarkRead(ctx context.Context, id, userID int64) error {
-    n := r.query.Notification
-    _, err := n.WithContext(ctx).Where(n.ID.Eq(id), n.UserID.Eq(userID)).Update(n.IsRead, true)
-    return err
+	n := r.query.Notification
+	_, err := n.WithContext(ctx).Where(n.ID.Eq(id), n.UserID.Eq(userID)).Update(n.IsRead, true)
+	return err
 }
 
 func (r *notificationRepo) MarkAllRead(ctx context.Context, userID int64) error {
-    n := r.query.Notification
-    _, err := n.WithContext(ctx).Where(n.UserID.Eq(userID), n.IsRead.Is(false)).Update(n.IsRead, true)
-    return err
+	n := r.query.Notification
+	_, err := n.WithContext(ctx).Where(n.UserID.Eq(userID), n.IsRead.Is(false)).Update(n.IsRead, true)
+	return err
 }
 
 func (r *notificationRepo) Delete(ctx context.Context, id, userID int64) error {
-    n := r.query.Notification
-    _, err := n.WithContext(ctx).Where(n.ID.Eq(id), n.UserID.Eq(userID)).Delete()
-    return err
+	n := r.query.Notification
+	_, err := n.WithContext(ctx).Where(n.ID.Eq(id), n.UserID.Eq(userID)).Delete()
+	return err
 }
 
-func toModelNotification(en *entity.Notification) *model.Notification { /* 字段映射 */ }
-func toEntityNotification(mn *model.Notification) *entity.Notification { /* 字段映射 */ }
+func toModelNotification(en *entity.Notification) *model.Notification {
+	meta := en.Meta
+	if len(meta) == 0 {
+		meta = json.RawMessage(`{}`)
+	}
+	return &model.Notification{
+		ID:        en.ID,
+		UserID:    en.UserID,
+		Type:      en.Type,
+		Title:     en.Title,
+		Content:   en.Content,
+		Meta:      string(meta),
+		IsRead:    en.IsRead,
+		CreatedAt: en.CreatedAt,
+	}
+}
+
+func toEntityNotification(mn *model.Notification) *entity.Notification {
+	return &entity.Notification{
+		ID:        mn.ID,
+		UserID:    mn.UserID,
+		Type:      mn.Type,
+		Title:     mn.Title,
+		Content:   mn.Content,
+		Meta:      json.RawMessage(mn.Meta),
+		IsRead:    mn.IsRead,
+		CreatedAt: mn.CreatedAt,
+	}
+}
 ```
 
 ### 6.3 Notifier 实现
 
-`internal/repo/notification/notifier.go`
+[`notifier.go`](internal/repo/notification/notifier.go#L1-L50)
 
 ```go
 package notification
@@ -413,7 +445,7 @@ func (n *notifier) Send(ctx context.Context, notif entity.Notification) error {
 
 ### 7.1 Input
 
-`internal/usecase/input/notification.go`
+[`input/notification.go`](internal/usecase/input/notification.go#L1-L14)
 
 ```go
 package input
@@ -424,55 +456,61 @@ type ListNotifications struct {
     UserID int64
     IsRead BoolFilterParam
 }
+
+type SendAdminNotification struct {
+	UserID  int64
+	Title   string
+	Content string
+}
 ```
 
 > 无 `CreateNotification` Input — 通知创建由 `repo.Notifier.Send()` 直接接收 `entity.Notification`。
 
 ### 7.2 Output
 
-`internal/usecase/output/notification.go`
+[`output/notification.go`](internal/usecase/output/notification.go#L1-L19)
 
 ```go
 package output
 
 import (
-    "encoding/json"
-    "time"
+	"encoding/json"
+	"time"
 )
 
 type NotificationDetail struct {
-    ID            int64     `json:"id"`
-    Type          string    `json:"type"`
-    Title         string    `json:"title"`
-    Content       string    `json:"content"`
-    Meta          json.RawMessage `json:"meta"`
-    PostSlug      *string   `json:"post_slug,omitempty"`
-    CommentID     *int64    `json:"comment_id,omitempty"`
-    TargetURL     *string   `json:"target_url,omitempty"`
-    IsRead        bool      `json:"is_read"`
-    CreatedAt     time.Time `json:"created_at"`
+	ID        int64           `json:"id"`
+	Type      string          `json:"type"`
+	Title     string          `json:"title"`
+	Content   string          `json:"content"`
+	Meta      json.RawMessage `json:"meta"`
+	PostSlug  *string         `json:"post_slug,omitempty"`
+	CommentID *int64          `json:"comment_id,omitempty"`
+	TargetURL *string         `json:"target_url,omitempty"`
+	IsRead    bool            `json:"is_read"`
+	CreatedAt time.Time       `json:"created_at"`
 }
 ```
 
 ### 7.3 UseCase 接口
 
-在 `internal/usecase/contracts.go` 中新增：
+接口定义见：[contracts.go](internal/usecase/contracts.go#L149-L163)
 
 ```go
 type Notification interface {
-    // V1（用户端）
-    ListMyNotifications(ctx context.Context, params input.ListNotifications) (*output.ListResult[output.NotificationDetail], error)
-    GetUnreadCount(ctx context.Context, userID int64) (int64, error)
-    MarkRead(ctx context.Context, id, userID int64) error
-    MarkAllRead(ctx context.Context, userID int64) error
-    DeleteNotification(ctx context.Context, id, userID int64) error
+	// V1
+	ListMyNotifications(ctx context.Context, params input.ListNotifications) (*output.ListResult[output.NotificationDetail], error)
+	GetUnreadCount(ctx context.Context, userID int64) (int64, error)
+	MarkRead(ctx context.Context, id, userID int64) error
+	MarkAllRead(ctx context.Context, userID int64) error
+	DeleteNotification(ctx context.Context, id, userID int64) error
 
-    // Admin
-    SendAdminMessage(ctx context.Context, params input.SendAdminNotification) error
+	// Admin
+	SendAdminMessage(ctx context.Context, params input.SendAdminNotification) error
 
-    // SSE
-    Subscribe(userID int64) chan ssehub.Event
-    Unsubscribe(userID int64, ch chan ssehub.Event)
+	// SSE
+	Subscribe(userID int64) chan ssehub.Event
+	Unsubscribe(userID int64, ch chan ssehub.Event)
 }
 ```
 
@@ -488,104 +526,166 @@ type Notification interface {
 
 ### 7.4 UseCase 实现
 
-`internal/usecase/notification/notification.go`
+[`notification/notification.go`](internal/usecase/notification/notification.go#L1-L156)
 
 ```go
 package notification
 
 import (
-    "context"
-    "errors"
-    "fmt"
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
 
-    "github.com/scc749/nimbus-blog-api/internal/repo"
-    "github.com/scc749/nimbus-blog-api/internal/usecase"
-    "github.com/scc749/nimbus-blog-api/internal/usecase/input"
-    "github.com/scc749/nimbus-blog-api/internal/usecase/output"
-    "github.com/scc749/nimbus-blog-api/pkg/ssehub"
+	"github.com/scc749/nimbus-blog-api/internal/entity"
+	"github.com/scc749/nimbus-blog-api/internal/repo"
+	"github.com/scc749/nimbus-blog-api/internal/usecase"
+	"github.com/scc749/nimbus-blog-api/internal/usecase/input"
+	"github.com/scc749/nimbus-blog-api/internal/usecase/output"
+	"github.com/scc749/nimbus-blog-api/pkg/ssehub"
 )
 
 var ErrRepo = errors.New("repo")
 
 type useCase struct {
-    notifications repo.NotificationRepo
-    notifier      repo.Notifier
-    hub           *ssehub.Hub
+	notifications repo.NotificationRepo
+	notifier      repo.Notifier
+	hub           *ssehub.Hub
 }
 
 func New(notifications repo.NotificationRepo, notifier repo.Notifier, hub *ssehub.Hub) usecase.Notification {
-    return &useCase{notifications: notifications, notifier: notifier, hub: hub}
+	return &useCase{notifications: notifications, notifier: notifier, hub: hub}
 }
 
 func (u *useCase) Subscribe(userID int64) chan ssehub.Event {
-    return u.hub.Subscribe(userID)
+	return u.hub.Subscribe(userID)
 }
 
 func (u *useCase) Unsubscribe(userID int64, ch chan ssehub.Event) {
-    u.hub.Unsubscribe(userID, ch)
+	u.hub.Unsubscribe(userID, ch)
 }
 
 func (u *useCase) GetUnreadCount(ctx context.Context, userID int64) (int64, error) {
-    count, err := u.notifications.CountUnread(ctx, userID)
-    if err != nil {
-        return 0, fmt.Errorf("%w: %v", ErrRepo, err)
-    }
-    return count, nil
+	count, err := u.notifications.CountUnread(ctx, userID)
+	if err != nil {
+		return 0, fmt.Errorf("%w: %v", ErrRepo, err)
+	}
+	return count, nil
 }
 
 func (u *useCase) ListMyNotifications(ctx context.Context, params input.ListNotifications) (*output.ListResult[output.NotificationDetail], error) {
-    offset := (params.Page - 1) * params.PageSize
+	offset := (params.Page - 1) * params.PageSize
 
-    var isRead *bool
-    if params.IsRead != nil {
-        isRead = (*bool)(params.IsRead)
-    }
-    var sortBy, order *string
-    if params.Sort != nil {
-        sortBy = &params.Sort.SortBy
-        order = &params.Sort.Order
-    }
+	var isRead *bool
+	if params.IsRead != nil {
+		isRead = (*bool)(params.IsRead)
+	}
+	var sortBy, order *string
+	if params.Sort != nil {
+		sortBy = &params.Sort.SortBy
+		order = &params.Sort.Order
+	}
 
-    rows, total, err := u.notifications.List(ctx, offset, params.PageSize, params.UserID, isRead, sortBy, order)
-    if err != nil {
-        return nil, fmt.Errorf("%w: %v", ErrRepo, err)
-    }
+	rows, total, err := u.notifications.List(ctx, offset, params.PageSize, params.UserID, isRead, sortBy, order)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrRepo, err)
+	}
 
-    items := make([]output.NotificationDetail, len(rows))
-    for i, n := range rows {
-        items[i] = toNotificationDetail(n)
-    }
+	items := make([]output.NotificationDetail, len(rows))
+	for i, n := range rows {
+		items[i] = toNotificationDetail(n)
+	}
 
-    return &output.ListResult[output.NotificationDetail]{
-        Items:    items,
-        Page:     params.Page,
-        PageSize: params.PageSize,
-        Total:    total,
-    }, nil
+	return &output.ListResult[output.NotificationDetail]{
+		Items:    items,
+		Page:     params.Page,
+		PageSize: params.PageSize,
+		Total:    total,
+	}, nil
 }
 
 func (u *useCase) MarkRead(ctx context.Context, id, userID int64) error {
-    if err := u.notifications.MarkRead(ctx, id, userID); err != nil {
-        return fmt.Errorf("%w: %v", ErrRepo, err)
-    }
-    return nil
+	if err := u.notifications.MarkRead(ctx, id, userID); err != nil {
+		return fmt.Errorf("%w: %v", ErrRepo, err)
+	}
+	u.publishUnreadCount(ctx, userID)
+	return nil
 }
 
 func (u *useCase) MarkAllRead(ctx context.Context, userID int64) error {
-    if err := u.notifications.MarkAllRead(ctx, userID); err != nil {
-        return fmt.Errorf("%w: %v", ErrRepo, err)
-    }
-    return nil
+	if err := u.notifications.MarkAllRead(ctx, userID); err != nil {
+		return fmt.Errorf("%w: %v", ErrRepo, err)
+	}
+	u.publishUnreadCount(ctx, userID)
+	return nil
 }
 
 func (u *useCase) DeleteNotification(ctx context.Context, id, userID int64) error {
-    if err := u.notifications.Delete(ctx, id, userID); err != nil {
-        return fmt.Errorf("%w: %v", ErrRepo, err)
-    }
-    return nil
+	if err := u.notifications.Delete(ctx, id, userID); err != nil {
+		return fmt.Errorf("%w: %v", ErrRepo, err)
+	}
+	u.publishUnreadCount(ctx, userID)
+	return nil
 }
 
-func toNotificationDetail(n *entity.Notification) output.NotificationDetail { /* 字段映射 */ }
+func (u *useCase) SendAdminMessage(ctx context.Context, params input.SendAdminNotification) error {
+	meta, _ := json.Marshal(map[string]string{entity.NotificationMetaSource: "admin"})
+	return u.notifier.Send(ctx, entity.Notification{
+		UserID:  params.UserID,
+		Type:    entity.NotificationTypeAdminMessage,
+		Title:   params.Title,
+		Content: params.Content,
+		Meta:    meta,
+	})
+}
+
+func toNotificationDetail(n *entity.Notification) output.NotificationDetail {
+	if n == nil {
+		return output.NotificationDetail{}
+	}
+
+	meta := n.Meta
+	if len(meta) == 0 {
+		meta = json.RawMessage(`{}`)
+	}
+
+	d := output.NotificationDetail{
+		ID:        n.ID,
+		Type:      n.Type,
+		Title:     n.Title,
+		Content:   n.Content,
+		Meta:      meta,
+		IsRead:    n.IsRead,
+		CreatedAt: n.CreatedAt,
+	}
+
+	if len(n.Meta) > 0 {
+		var m struct {
+			PostSlug  *string `json:"post_slug"`
+			CommentID *int64  `json:"comment_id"`
+			TargetURL *string `json:"target_url"`
+		}
+		if err := json.Unmarshal(n.Meta, &m); err == nil {
+			d.PostSlug = m.PostSlug
+			d.CommentID = m.CommentID
+			d.TargetURL = m.TargetURL
+		}
+	}
+
+	return d
+}
+
+func (u *useCase) publishUnreadCount(ctx context.Context, userID int64) {
+	count, err := u.notifications.CountUnread(ctx, userID)
+	if err != nil {
+		return
+	}
+	data, err := json.Marshal(map[string]int64{"count": count})
+	if err != nil {
+		return
+	}
+	u.hub.Publish(userID, ssehub.Event{Name: "unread_count", Data: data})
+}
 ```
 
 ---
@@ -613,39 +713,38 @@ POST   /api/admin/notifications       → 给指定用户发送通知
 
 ### 8.2 路由注册
 
-`internal/controller/http/v1/router.go` 新增：
+V1 注册见：[router.go](internal/controller/http/v1/router.go#L137-L153)
 
 ```go
 func NewNotificationRoutes(apiV1Group fiber.Router, l logger.Interface, signer authUC.TokenSigner, auth usecase.UserAuth, notification usecase.Notification) {
-    r := &V1{logger: l, validate: validator.New(validator.WithRequiredStructEnabled()), notification: notification, signer: signer}
+	r := &V1{logger: l, validate: validator.New(validator.WithRequiredStructEnabled()), notification: notification, signer: signer}
 
-    // SSE 流使用 URL query token 认证（EventSource 不支持自定义 Header）
-    notificationPublicGroup := apiV1Group.Group("/notifications")
-    {
-        notificationPublicGroup.Get("/stream", r.streamNotifications)
-    }
+	notificationPublicGroup := apiV1Group.Group("/notifications")
+	{
+		notificationPublicGroup.Get("/stream", r.streamNotifications)
+	}
 
-    notifAuthGroup := apiV1Group.Group("/notifications", middleware.NewUserJWTMiddleware(signer, auth))
-    {
-        notifAuthGroup.Get("/", r.listNotifications)
-        notifAuthGroup.Get("/unread", r.getUnreadCount)
-        notifAuthGroup.Put("/:id/read", r.markRead)
-        notifAuthGroup.Put("/read-all", r.markAllRead)
-        notifAuthGroup.Delete("/:id", r.deleteNotification)
-    }
+	notificationAuthGroup := apiV1Group.Group("/notifications", middleware.NewUserJWTMiddleware(signer, auth))
+	{
+		notificationAuthGroup.Get("/", r.listNotifications)
+		notificationAuthGroup.Get("/unread", r.getUnreadCount)
+		notificationAuthGroup.Put("/:id/read", r.markRead)
+		notificationAuthGroup.Put("/read-all", r.markAllRead)
+		notificationAuthGroup.Delete("/:id", r.deleteNotification)
+	}
 }
 ```
 
-`internal/controller/http/admin/router.go` 新增：
+Admin 注册见：[router.go](internal/controller/http/admin/router.go#L123-L130)
 
 ```go
 func NewNotificationRoutes(apiAdminGroup fiber.Router, l logger.Interface, store *session.Store, notify usecase.Notification) {
-    r := &Admin{logger: l, validate: validator.New(validator.WithRequiredStructEnabled()), sess: store, notify: notify}
+	r := &Admin{logger: l, validate: validator.New(validator.WithRequiredStructEnabled()), sess: store, notify: notify}
 
-    notifGroup := apiAdminGroup.Group("/notifications", middleware.NewAdminSessionMiddleware(store))
-    {
-        notifGroup.Post("/", r.sendNotification)
-    }
+	notifAuthGroup := apiAdminGroup.Group("/notifications", middleware.NewAdminSessionMiddleware(store))
+	{
+		notifAuthGroup.Post("/", r.sendNotification)
+	}
 }
 ```
 
@@ -653,45 +752,45 @@ func NewNotificationRoutes(apiAdminGroup fiber.Router, l logger.Interface, store
 
 **Admin Request：**
 
-`internal/controller/http/admin/request/notification.go`
+[`request/notification.go`](internal/controller/http/admin/request/notification.go#L1-L7)
 
 ```go
 package request
 
 type SendNotification struct {
-    UserID  int64  `json:"user_id" validate:"required"`
-    Title   string `json:"title" validate:"required,min=1,max=200"`
-    Content string `json:"content" validate:"required,min=1"`
+	UserID  int64  `json:"user_id" validate:"required"`
+	Title   string `json:"title" validate:"required,min=1,max=200"`
+	Content string `json:"content" validate:"required,min=1"`
 }
 ```
 
 **V1 Response：**
 
-`internal/controller/http/v1/response/notification.go`
+[`v1/response/notification.go`](internal/controller/http/v1/response/notification.go#L1-L23)
 
 ```go
 package response
 
 import (
-    "encoding/json"
-    "time"
+	"encoding/json"
+	"time"
 )
 
 type NotificationDetail struct {
-    ID            int64     `json:"id"`
-    Type          string    `json:"type"`
-    Title         string    `json:"title"`
-    Content       string    `json:"content"`
-    Meta          json.RawMessage `json:"meta"`
-    PostSlug      *string   `json:"post_slug,omitempty"`
-    CommentID     *int64    `json:"comment_id,omitempty"`
-    TargetURL     *string   `json:"target_url,omitempty"`
-    IsRead        bool      `json:"is_read"`
-    CreatedAt     time.Time `json:"created_at"`
+	ID        int64           `json:"id"`
+	Type      string          `json:"type"`
+	Title     string          `json:"title"`
+	Content   string          `json:"content"`
+	Meta      json.RawMessage `json:"meta"`
+	PostSlug  *string         `json:"post_slug,omitempty"`
+	CommentID *int64          `json:"comment_id,omitempty"`
+	TargetURL *string         `json:"target_url,omitempty"`
+	IsRead    bool            `json:"is_read"`
+	CreatedAt time.Time       `json:"created_at"`
 }
 
 type UnreadCount struct {
-    Count int64 `json:"count"`
+	Count int64 `json:"count"`
 }
 ```
 
@@ -723,7 +822,7 @@ const (
 
 ### 8.5 SSE Stream Handler
 
-`internal/controller/http/v1/notification.go`
+[`v1/notification.go:streamNotifications`](internal/controller/http/v1/notification.go#L218-L272)
 
 ```go
 func (r *V1) streamNotifications(ctx fiber.Ctx) error {
@@ -918,38 +1017,19 @@ if status == entity.CommentStatusApproved {
 
 ## 十、Wire 依赖注入
 
-在 `internal/app/wire.go` 中新增：
+实现见：[wire.go](internal/app/wire.go#L185-L438)
 
 ```go
-// ─── Pkg: SSE Hub ────────────────────────────────────────
-
-func NewSSEHub() *ssehub.Hub {
-    return ssehub.New()
-}
-
-// ─── Repo: Notification ──────────────────────────────────
-
 func NewNotificationRepo(pg *postgres.Postgres) repo.NotificationRepo {
-    return persistence.NewNotificationRepo(pg.DB)
-}
-
-func NewNotifier(notificationRepo repo.NotificationRepo, hub *ssehub.Hub) repo.Notifier {
-    return reponotif.NewNotifier(notificationRepo, hub)
-}
-
-// ─── UseCase: Notification ───────────────────────────────
-
-func NewNotificationUseCase(notificationRepo repo.NotificationRepo, notifier repo.Notifier, hub *ssehub.Hub) usecase.Notification {
-    return notification.New(notificationRepo, notifier, hub)
+	return persistence.NewNotificationRepo(pg.DB)
 }
 ```
 
 修改现有 Provider：
 
 ```go
-// 新增 postRepo 与 notifier 参数
 func NewCommentUseCase(commentRepo repo.CommentRepo, commentLikeRepo repo.CommentLikeRepo, userRepo repo.UserRepo, postRepo repo.PostRepo, notifier repo.Notifier) usecase.Comment {
-    return comment.New(commentRepo, commentLikeRepo, userRepo, postRepo, notifier)
+	return comment.New(commentRepo, commentLikeRepo, userRepo, postRepo, notifier)
 }
 ```
 
@@ -957,16 +1037,75 @@ ProviderSet 新增：
 
 ```go
 var ProviderSet = wire.NewSet(
-    // ... 现有 ...
-    // Pkg
-    NewSSEHub,
-    // Repo: Notification
-    NewNotificationRepo,
-    NewNotifier,
-    // UseCase: Notification
-    NewNotificationUseCase,
-    // HTTP（SetupHTTPServer 新增 notificationUC 和 notifier 参数）
-    SetupHTTPServer,
+	// App 应用容器。
+	NewAppInfo,
+	NewLogger,
+	NewApp,
+	// Infrastructure 基础设施。
+	NewPostgres,
+	NewRedis,
+	NewMinioClient,
+	// RepoPersistence Postgres Repo。
+	NewAdminRepo,
+	NewUserRepo,
+	NewPostRepo,
+	NewTagRepo,
+	NewCategoryRepo,
+	NewCommentRepo,
+	NewPostLikeRepo,
+	NewCommentLikeRepo,
+	NewFeedbackRepo,
+	NewLinkRepo,
+	NewSiteSettingRepo,
+	NewFileRepo,
+	NewNotificationRepo,
+	NewRefreshTokenBlacklistRepo,
+	// RepoViewBuffer 浏览量缓冲。
+	NewPostViewRepo,
+	// RepoCache Redis Repo。
+	NewCaptchaStore,
+	NewEmailCodeStore,
+	NewRefreshTokenStore,
+	NewAdminTwoFASetupStore,
+	// RepoStorage MinIO Repo。
+	NewObjectStore,
+	// RepoMessaging SMTP Repo。
+	NewEmailSender,
+	// RepoWebAPI 外部 API。
+	NewTranslationWebAPI,
+	NewLLMWebAPI,
+	// UseCaseAuth 认证用例。
+	NewTokenSigner,
+	NewAdminAuthUseCase,
+	NewUserAuthUseCase,
+	NewAuthUseCase,
+	// UseCaseCaptcha 验证码用例。
+	NewCaptchaGenerator,
+	NewCaptchaUseCase,
+	// UseCaseEmail 邮件用例。
+	NewEmailUseCase,
+	// UseCaseFile 文件用例。
+	NewFileUseCase,
+	// UseCaseUser 用户用例。
+	NewUserUseCase,
+	// UseCaseContent 内容用例。
+	NewContentUseCase,
+	// UseCaseComment 评论用例。
+	NewCommentUseCase,
+	// UseCaseFeedback 反馈用例。
+	NewFeedbackUseCase,
+	// UseCaseLink 友链用例。
+	NewLinkUseCase,
+	// UseCaseSetting 设置用例。
+	NewSettingUseCase,
+	// Pkg 基础包。
+	NewSSEHub,
+	// RepoNotifier 通知推送。
+	NewNotifier,
+	// UseCaseNotification 通知用例。
+	NewNotificationUseCase,
+	// HTTP HTTP Server。
+	SetupHTTPServer,
 )
 ```
 

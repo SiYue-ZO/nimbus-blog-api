@@ -48,7 +48,7 @@ controller/http/middleware (UserJWT)
   - `type`：固定为 `"refresh"`（用于拒绝拿 access token 冒充 refresh）
   - `iss/iat/nbf/exp`
 
-实现：[jwt.go](internal/usecase/auth/user/jwt.go#L12-L191)
+实现：[jwt.go](internal/usecase/auth/user/jwt.go#L1-L192)
 
 ### 2.3 TTL 与 issuer
 
@@ -62,7 +62,7 @@ controller/http/middleware (UserJWT)
 
 ### 3.1 强制鉴权（需要登录）
 
-- 中间件：[user_jwt.go](internal/controller/http/middleware/user_jwt.go#L17-L64)
+- 中间件：[user_jwt.go](internal/controller/http/middleware/user_jwt.go#L1-L101)
 - 行为：
   - 缺 `Authorization`：HTTP 401 + `ErrorLoginRequired`
   - 格式非 Bearer：HTTP 400 + `ErrorParamFormat`
@@ -85,7 +85,7 @@ controller/http/middleware (UserJWT)
 ### 4.1 路由
 
 - `POST /api/v1/auth/register`
-- Handler：[v1/auth.go](internal/controller/http/v1/auth.go#L18-L137)
+- Handler：[v1/auth.go:register](internal/controller/http/v1/auth.go#L28-L137)
 
 ### 4.2 流程
 
@@ -109,7 +109,7 @@ controller/http/middleware (UserJWT)
 ### 5.1 路由
 
 - `POST /api/v1/auth/login`
-- Handler：[v1/auth.go](internal/controller/http/v1/auth.go#L139-L227)
+- Handler：[v1/auth.go:login](internal/controller/http/v1/auth.go#L152-L227)
 
 ### 5.2 流程
 
@@ -129,7 +129,7 @@ controller/http/middleware (UserJWT)
 ### 6.1 路由
 
 - `POST /api/v1/auth/refresh`
-- Handler：[v1/auth.go](internal/controller/http/v1/auth.go#L229-L294)
+- Handler：[v1/auth.go:refresh](internal/controller/http/v1/auth.go#L240-L294)
 
 ### 6.2 流程
 
@@ -145,7 +145,7 @@ controller/http/middleware (UserJWT)
    - 将旧 refresh 的 `sha256(token)` 写入 DB 黑名单（expires_at 使用旧 token exp）
 3. 回写 refresh cookie，并在响应体返回新的 access token（同时返回 refresh token）
 
-UseCase 实现：[auth.go](internal/usecase/auth/user/auth.go#L134-L187)
+UseCase 实现：[auth.go:Login/Refresh](internal/usecase/auth/user/auth.go#L93-L187)
 
 ## 七、退出登录
 
@@ -153,7 +153,7 @@ UseCase 实现：[auth.go](internal/usecase/auth/user/auth.go#L134-L187)
 
 - `POST /api/v1/auth/logout`
 - 前置：Bearer 中间件鉴权（路由层挂载）
-- Handler：[v1/auth.go](internal/controller/http/v1/auth.go#L351-L383)
+- Handler：[v1/auth.go:logout](internal/controller/http/v1/auth.go#L359-L384)
 
 ### 7.2 行为
 
@@ -167,14 +167,14 @@ UseCase 实现：[auth.go](internal/usecase/auth/user/auth.go#L134-L187)
 - key：`refresh_token:{userID}`
 - value：refresh token 原文
 
-实现：[refresh_token_store_redis.go](internal/repo/cache/refresh_token_store_redis.go#L12-L40)
+实现：[refresh_token_store_redis.go](internal/repo/cache/refresh_token_store_redis.go#L1-L41)
 
 ### 8.2 Postgres：refresh 黑名单
 
 - 存储：`sha256(refresh_token)` + `user_id` + `expires_at`
 - 用途：在 Redis 缺失（例如重启、驱逐、切换环境）时，仍能拒绝已轮换/撤销的旧 token
 
-实现：[refresh_token_blacklist_postgres_gen.go](internal/repo/persistence/refresh_token_blacklist_postgres_gen.go#L15-L41)
+实现：[refresh_token_blacklist_postgres_gen.go](internal/repo/persistence/refresh_token_blacklist_postgres_gen.go#L1-L41)
 
 ### 8.3 用户禁用后的会话失效
 
@@ -185,14 +185,16 @@ UseCase 实现：[auth.go](internal/usecase/auth/user/auth.go#L134-L187)
   - 删除 Redis 当前 refresh token
 - 后续请求经过 Bearer 中间件时，通过 `ValidateSession` 校验 refresh 会话并拒绝无效会话/禁用账号
 
-实现：[admin/user.go](internal/controller/http/admin/user.go#L96-L125), [auth.go](internal/usecase/auth/user/auth.go#L213-L291)
+实现：[admin/user.go:updateUserStatus](internal/controller/http/admin/user.go#L84-L125)，[auth.go:Revoke/Validate](internal/usecase/auth/user/auth.go#L213-L291)
 
 ## 九、与时间单位相关的当前行为
 
-- UseCase 返回的 `ExpiresIn/RefreshExpiresIn` 使用 `TokenSigner.TTL().Milliseconds()`（单位：毫秒）：
-  - [auth.go](internal/usecase/auth/user/auth.go#L124-L131)
-- Controller 写 cookie 的 `Expires` 计算以 `time.Second` 为单位相乘：
-  - register/login/refresh：[v1/auth.go](internal/controller/http/v1/auth.go#L107-L115), [v1/auth.go](internal/controller/http/v1/auth.go#L211-L220), [v1/auth.go](internal/controller/http/v1/auth.go#L278-L286)
+- UseCase 返回的 `ExpiresIn/RefreshExpiresIn` 使用 `AccessTTL/RefreshTTL().Milliseconds()`（单位：毫秒）：
+  - [auth.go:TokenPair](internal/usecase/auth/user/auth.go#L112-L131)
+- Controller 写 cookie 的 `Expires` 以 `time.Duration(pair.RefreshExpiresIn) * time.Second` 计算：
+  - register：[v1/auth.go:register cookie](internal/controller/http/v1/auth.go#L107-L115)
+  - login：[v1/auth.go:login cookie](internal/controller/http/v1/auth.go#L211-L220)
+  - refresh：[v1/auth.go:refresh cookie](internal/controller/http/v1/auth.go#L278-L286)
 
 结论与建议：
 - 当前实现的单位存在错位风险：如果 `RefreshExpiresIn` 以“毫秒”返回，但按“秒”写入 Cookie，会导致 Cookie 过期时间被放大（约 1000 倍）。
