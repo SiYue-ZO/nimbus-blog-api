@@ -170,6 +170,7 @@ swagger:
 项目引入 docs 包（`cmd/app/main.go` 中 `_ "github.com/scc749/nimbus-blog-api/docs"`），因此需要在更新注解后重新生成：
 
 ```bash
+go install github.com/swaggo/swag/cmd/swag@latest
 swag init -g cmd/app/main.go -d . -o docs --parseInternal --parseDependency
 ```
 

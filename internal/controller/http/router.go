@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/session"
 	redisstore "github.com/gofiber/storage/redis/v3"
 	"github.com/scc749/nimbus-blog-api/config"
+	_ "github.com/scc749/nimbus-blog-api/docs"
 	"github.com/scc749/nimbus-blog-api/internal/controller/http/admin"
 	"github.com/scc749/nimbus-blog-api/internal/controller/http/middleware"
 	v1 "github.com/scc749/nimbus-blog-api/internal/controller/http/v1"

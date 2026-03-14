@@ -1747,6 +1747,7 @@ func InitializeApp(cfg *config.Config) (*App, func(), error) {
  - 生成文档：在项目根目录执行
  
  ```bash
+ go install github.com/swaggo/swag/cmd/swag@latest
  swag init -g cmd/app/main.go -d . -o docs --parseInternal --parseDependency
  ```
  
