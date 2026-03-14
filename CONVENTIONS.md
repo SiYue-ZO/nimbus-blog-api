@@ -1747,9 +1747,11 @@ func InitializeApp(cfg *config.Config) (*App, func(), error) {
  - 生成文档：在项目根目录执行
  
  ```bash
- swag init -g cmd/app/main.go -o docs
+ swag init -g cmd/app/main.go -d . -o docs --parseInternal --parseDependency
  ```
  
+说明：不建议加 `--parseGoList=false`，否则在部分 Go 版本下可能导致 `json.RawMessage` 等类型解析失败，从而出现 schema 缺失。
+
  - 配置开关：`config.yaml` 中 `swagger.enabled`（true 开启 / false 关闭）
  
 ### 分页响应的文档类型

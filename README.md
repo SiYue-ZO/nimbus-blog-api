@@ -170,8 +170,10 @@ swagger:
 项目引入 docs 包（`cmd/app/main.go` 中 `_ "github.com/scc749/nimbus-blog-api/docs"`），因此需要在更新注解后重新生成：
 
 ```bash
-swag init -g cmd/app/main.go -o docs
+swag init -g cmd/app/main.go -d . -o docs --parseInternal --parseDependency
 ```
+
+说明：不建议加 `--parseGoList=false`，否则在部分 Go 版本下可能导致 `json.RawMessage` 等类型解析失败，从而出现 schema 缺失。
 
 ## 开发工具
 

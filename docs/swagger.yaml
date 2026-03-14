@@ -1216,6 +1216,8 @@ definitions:
     type: object
   github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetail:
     properties:
+      comment_id:
+        type: integer
       content:
         type: string
       created_at:
@@ -1224,9 +1226,13 @@ definitions:
         type: integer
       is_read:
         type: boolean
-      reference_id:
-        type: integer
-      reference_type:
+      meta:
+        items:
+          type: integer
+        type: array
+      post_slug:
+        type: string
+      target_url:
         type: string
       title:
         type: string

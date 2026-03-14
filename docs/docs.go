@@ -6361,6 +6361,9 @@ const docTemplate = `{
         "github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.NotificationDetail": {
             "type": "object",
             "properties": {
+                "comment_id": {
+                    "type": "integer"
+                },
                 "content": {
                     "type": "string"
                 },
@@ -6373,10 +6376,16 @@ const docTemplate = `{
                 "is_read": {
                     "type": "boolean"
                 },
-                "reference_id": {
-                    "type": "integer"
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
-                "reference_type": {
+                "post_slug": {
+                    "type": "string"
+                },
+                "target_url": {
                     "type": "string"
                 },
                 "title": {
