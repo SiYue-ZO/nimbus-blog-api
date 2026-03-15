@@ -1,13 +1,13 @@
 package output
 
 type ListResult[T any] struct {
-	Items    []T   `json:"items"`
-	Page     int   `json:"page"`
-	PageSize int   `json:"page_size"`
-	Total    int64 `json:"total"`
+	Items    []T
+	Page     int
+	PageSize int
+	Total    int64
 }
 
 type AllResult[T any] struct {
-	Items []T   `json:"items"`
-	Total int64 `json:"total"`
+	Items []T
+	Total int64
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/scc749/nimbus-blog-api/internal/controller/http/v1/request"
 	"github.com/scc749/nimbus-blog-api/internal/controller/http/v1/response"
 	authUC "github.com/scc749/nimbus-blog-api/internal/usecase/auth/user"
-	"github.com/scc749/nimbus-blog-api/internal/usecase/output"
 )
 
 const RefreshCookieName = "refresh_token"
@@ -114,7 +113,7 @@ func (r *V1) register(ctx fiber.Ctx) error {
 		Path:     "/",
 	})
 
-	dto := output.UserDetail{
+	dto := response.UserProfile{
 		ID:              user.ID,
 		Name:            user.Name,
 		Email:           user.Email,

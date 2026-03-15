@@ -21,12 +21,12 @@ type AdminProfile struct {
 }
 
 type TwoFASetupStart struct {
-	SetupID  string `json:"setup_id"`
-	Secret   string `json:"secret"`
-	QRBase64 string `json:"qr_base64"`
+	SetupID  string
+	Secret   string
+	QRBase64 string
 }
 
 type TwoFAVerifyResult struct {
-	Enabled       bool     `json:"enabled"`
-	RecoveryCodes []string `json:"recovery_codes"`
+	Enabled       bool
+	RecoveryCodes []string
 }

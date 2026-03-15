@@ -1,7 +1,5 @@
 package response
 
-import "github.com/scc749/nimbus-blog-api/internal/usecase/output"
-
 type Login struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
@@ -17,8 +15,8 @@ type Refresh struct {
 }
 
 type Register struct {
-	AccessToken string            `json:"access_token"`
-	TokenType   string            `json:"token_type"`
-	ExpiresIn   int64             `json:"expires_in"`
-	User        output.UserDetail `json:"user"`
+	AccessToken string      `json:"access_token"`
+	TokenType   string      `json:"token_type"`
+	ExpiresIn   int64       `json:"expires_in"`
+	User        UserProfile `json:"user"`
 }

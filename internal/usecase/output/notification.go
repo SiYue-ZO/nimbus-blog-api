@@ -6,14 +6,14 @@ import (
 )
 
 type NotificationDetail struct {
-	ID        int64           `json:"id"`
-	Type      string          `json:"type"`
-	Title     string          `json:"title"`
-	Content   string          `json:"content"`
-	Meta      json.RawMessage `json:"meta"`
-	PostSlug  *string         `json:"post_slug,omitempty"`
-	CommentID *int64          `json:"comment_id,omitempty"`
-	TargetURL *string         `json:"target_url,omitempty"`
-	IsRead    bool            `json:"is_read"`
-	CreatedAt time.Time       `json:"created_at"`
+	ID        int64
+	Type      string
+	Title     string
+	Content   string
+	Meta      json.RawMessage
+	PostSlug  *string
+	CommentID *int64
+	TargetURL *string
+	IsRead    bool
+	CreatedAt time.Time
 }

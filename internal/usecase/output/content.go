@@ -3,25 +3,25 @@ package output
 import "time"
 
 type BasePost struct {
-	ID            int64      `json:"id"`
-	Title         string     `json:"title"`
-	Slug          string     `json:"slug"`
-	Excerpt       string     `json:"excerpt"`
-	FeaturedImage string     `json:"featured_image"`
-	AuthorID      int64      `json:"author_id"`
-	Status        string     `json:"status"`
-	ReadTime      string     `json:"read_time"`
-	Views         int32      `json:"views"`
-	IsFeatured    bool       `json:"is_featured"`
-	PublishedAt   *time.Time `json:"published_at"`
-	CreatedAt     time.Time  `json:"created_at"`
-	UpdatedAt     time.Time  `json:"updated_at"`
+	ID            int64
+	Title         string
+	Slug          string
+	Excerpt       string
+	FeaturedImage string
+	AuthorID      int64
+	Status        string
+	ReadTime      string
+	Views         int32
+	IsFeatured    bool
+	PublishedAt   *time.Time
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 type AuthorInfo struct {
-	ID             int64  `json:"id"`
-	Nickname       string `json:"nickname"`
-	Specialization string `json:"specialization"`
+	ID             int64
+	Nickname       string
+	Specialization string
 }
 
 type LikeInfo struct {
@@ -30,46 +30,46 @@ type LikeInfo struct {
 }
 
 type BaseCategory struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
+	ID   int64
+	Name string
+	Slug string
 }
 
 type BaseTag struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
+	ID   int64
+	Name string
+	Slug string
 }
 
 type CategoryDetail struct {
 	BaseCategory
-	PostCount int32     `json:"post_count"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	PostCount int32
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type TagDetail struct {
 	BaseTag
-	PostCount int32     `json:"post_count"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	PostCount int32
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type PostSummary struct {
 	BasePost
-	Author   AuthorInfo   `json:"author"`
-	Like     LikeInfo     `json:"like"`
-	Category BaseCategory `json:"category"`
-	Tags     []BaseTag    `json:"tags"`
+	Author   AuthorInfo
+	Like     LikeInfo
+	Category BaseCategory
+	Tags     []BaseTag
 }
 
 type PostDetail struct {
 	BasePost
-	Author          AuthorInfo   `json:"author"`
-	Like            LikeInfo     `json:"like"`
-	Category        BaseCategory `json:"category"`
-	Tags            []BaseTag    `json:"tags"`
-	Content         string       `json:"content"`
-	MetaTitle       string       `json:"meta_title"`
-	MetaDescription string       `json:"meta_description"`
+	Author          AuthorInfo
+	Like            LikeInfo
+	Category        BaseCategory
+	Tags            []BaseTag
+	Content         string
+	MetaTitle       string
+	MetaDescription string
 }

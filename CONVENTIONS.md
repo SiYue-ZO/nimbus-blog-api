@@ -520,17 +520,17 @@ type ListPosts struct {
 
 ### UseCase Output（`internal/usecase/output/`）
 
-- 带 `json` tag（snake_case 格式）
+- 纯结构体，**不带 struct tag**
 - 使用 Base 结构体嵌入实现继承：`BasePost → PostSummary → PostDetail`
 - 关联信息使用独立结构体：`AuthorInfo`（嵌入 `PostSummary` / `PostDetail`，包含 `id` + `nickname` + `specialization`）、`LikeInfo`（`Liked *bool` + `Likes int32`，嵌入文章/评论 Output DTO）
 - 分页结果使用泛型：`ListResult[T]`、`AllResult[T]`
 
 ```go
 type ListResult[T any] struct {
-    Items    []T   `json:"items"`
-    Page     int   `json:"page"`
-    PageSize int   `json:"page_size"`
-    Total    int64 `json:"total"`
+    Items    []T
+    Page     int
+    PageSize int
+    Total    int64
 }
 ```
 
