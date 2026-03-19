@@ -3,7 +3,7 @@ module github.com/scc749/nimbus-blog-api
 go 1.25.5
 
 require (
-	github.com/Conight/go-googletrans v0.2.4
+	github.com/Conight/go-googletrans v0.3.0
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/goccy/go-json v0.10.5
 	github.com/gofiber/contrib/v3/swaggo v1.0.0
