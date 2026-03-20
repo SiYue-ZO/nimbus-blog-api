@@ -284,11 +284,9 @@ func (r *V1) refresh(ctx fiber.Ctx) error {
 		Path:     "/",
 	})
 	return sharedresp.WriteSuccess(ctx, sharedresp.WithData(response.Refresh{
-		AccessToken:      pair.AccessToken,
-		RefreshToken:     pair.RefreshToken,
-		TokenType:        pair.TokenType,
-		ExpiresIn:        pair.ExpiresIn,
-		RefreshExpiresIn: pair.RefreshExpiresIn,
+		AccessToken: pair.AccessToken,
+		TokenType:   pair.TokenType,
+		ExpiresIn:   pair.ExpiresIn,
 	}))
 }
 

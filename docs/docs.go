@@ -6578,12 +6578,6 @@ const docTemplate = `{
                 "expires_in": {
                     "type": "integer"
                 },
-                "refresh_expires_in": {
-                    "type": "integer"
-                },
-                "refresh_token": {
-                    "type": "string"
-                },
                 "token_type": {
                     "type": "string"
                 }
@@ -6602,7 +6596,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/github_com_scc749_nimbus-blog-api_internal_usecase_output.UserDetail"
+                    "$ref": "#/definitions/github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UserProfile"
                 }
             }
         },
@@ -6669,53 +6663,6 @@ const docTemplate = `{
         "github_com_scc749_nimbus-blog-api_internal_controller_http_v1_response.UserProfile": {
             "type": "object",
             "properties": {
-                "avatar": {
-                    "type": "string"
-                },
-                "bio": {
-                    "type": "string"
-                },
-                "blog_url": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "email_verified": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "region": {
-                    "type": "string"
-                },
-                "show_full_profile": {
-                    "type": "boolean"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_scc749_nimbus-blog-api_internal_usecase_output.UserDetail": {
-            "type": "object",
-            "properties": {
-                "auth_openid": {
-                    "type": "string"
-                },
-                "auth_provider": {
-                    "type": "string"
-                },
                 "avatar": {
                     "type": "string"
                 },

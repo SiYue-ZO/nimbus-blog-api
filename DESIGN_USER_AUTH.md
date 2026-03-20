@@ -143,7 +143,7 @@ controller/http/middleware (UserJWT)
    - 签发新的 access + refresh
    - 写入 Redis 的当前 refresh
    - 将旧 refresh 的 `sha256(token)` 写入 DB 黑名单（expires_at 使用旧 token exp）
-3. 回写 refresh cookie，并在响应体返回新的 access token（同时返回 refresh token）
+3. 回写 refresh cookie，并在响应体返回新的 access token（响应体不返回 refresh token）
 
 UseCase 实现：[auth.go:Login/Refresh](internal/usecase/auth/user/auth.go#L93-L187)
 
