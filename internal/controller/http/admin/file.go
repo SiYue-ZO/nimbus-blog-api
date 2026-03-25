@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -121,18 +120,6 @@ func (r *Admin) generateUploadURL(ctx fiber.Ctx) error {
 		r.logger.Error(err, "http - admin - file - generateUploadURL - usecase")
 		return sharedresp.WriteError(ctx, http.StatusBadGateway, response.ErrorGenerateUploadURLFailed, "failed to generate upload url")
 	}
-	if u, perr := url.Parse(su); perr == nil {
-		proto := ctx.Get("X-Forwarded-Proto")
-		if proto == "" {
-			proto = "http"
-		}
-		host := ctx.Get("X-Forwarded-Host")
-		if host == "" {
-			host = ctx.Hostname()
-		}
-		su = fmt.Sprintf("%s://%s/minio%s", proto, host, u.RequestURI())
-	}
-
 	var uploaderID int64
 	if idVal := ctx.Locals("admin_id"); idVal != nil {
 		if idStr, ok := idVal.(string); ok {
@@ -206,17 +193,6 @@ func (r *Admin) listFiles(ctx fiber.Ctx) error {
 	list := make([]response.FileDetail, 0, len(result.Items))
 	for _, f := range result.Items {
 		dl, _ := r.file.GetFileURL(ctx.Context(), f.ObjectKey, _fileListURLExpiry)
-		if u, perr := url.Parse(dl); perr == nil {
-			proto := ctx.Get("X-Forwarded-Proto")
-			if proto == "" {
-				proto = "http"
-			}
-			host := ctx.Get("X-Forwarded-Host")
-			if host == "" {
-				host = ctx.Hostname()
-			}
-			dl = fmt.Sprintf("%s://%s/minio%s", proto, host, u.RequestURI())
-		}
 		list = append(list, response.FileDetail{
 			ID:         f.ID,
 			ObjectKey:  f.ObjectKey,

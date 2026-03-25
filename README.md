@@ -93,6 +93,10 @@ MinIO 初始化建议：
 - 配置文件：[config.yaml](./config.yaml)
 - 配置结构体：[config/config.go](./config/config.go)
 
+文件存储对外访问地址（`file_storage.public_base_url`）：
+- 本地 MinIO：`http://localhost:9000`（默认）
+- 使用本地 MinIO 之外的其他服务：改为你的自定义存储域名（CDN/对象存储网关域名）
+
 建议在本地/测试环境也替换以下敏感项（不要把真实密钥提交到仓库）：
 - `postgres.password`
 - `redis.password`

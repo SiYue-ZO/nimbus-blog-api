@@ -7,6 +7,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/wire"
@@ -214,10 +215,14 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 	return cache.NewAdminTwoFARedisStore(r)
 }
 
-// Storage Repo（MinIO）。
+// Storage Repo（对象存储）。
 
-func NewObjectStore(cli *minioSDK.Client) repo.ObjectStore {
-	return storage.NewMinioStore(cli)
+func NewObjectStore(cfg *config.Config, cli *minioSDK.Client) (repo.ObjectStore, error) {
+	provider := cfg.File.Provider
+	if provider == "" || provider == "minio" {
+		return storage.NewMinioStore(cli, cfg.File.PublicBaseURL), nil
+	}
+	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)
 }
 
 // Messaging Repo（SMTP）。

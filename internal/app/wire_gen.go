@@ -8,6 +8,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/wire"
 	"github.com/minio/minio-go/v7"
 	"github.com/scc749/nimbus-blog-api/config"
@@ -45,7 +46,7 @@ import (
 
 // Injectors from wire.go:
 
-// InitializeApp initializes the application and returns a cleanup function.
+// InitializeApp 初始化 App 并返回 cleanup。
 func InitializeApp(cfg *config.Config) (*App, func(), error) {
 	appInfo := NewAppInfo(cfg)
 	loggerInterface := NewLogger(cfg)
@@ -84,7 +85,12 @@ func InitializeApp(cfg *config.Config) (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	objectStore := NewObjectStore(client)
+	objectStore, err := NewObjectStore(cfg, client)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	fileRepo := NewFileRepo(postgres)
 	file := NewFileUseCase(cfg, objectStore, fileRepo)
 	user := NewUserUseCase(userRepo)
@@ -129,11 +135,13 @@ type App struct {
 	HTTPServer *httpserver.Server
 }
 
+// AppInfo 应用信息。
 type AppInfo struct {
 	Name    string
 	Version string
 }
 
+// NewApp 创建 App。
 func NewApp(info AppInfo, l logger.Interface, pg *postgres.Postgres, r *redis.Redis, srv *httpserver.Server) *App {
 	return &App{
 		Info:       info,
@@ -144,16 +152,17 @@ func NewApp(info AppInfo, l logger.Interface, pg *postgres.Postgres, r *redis.Re
 	}
 }
 
+// NewAppInfo 创建 AppInfo。
 func NewAppInfo(cfg *config.Config) AppInfo {
 	return AppInfo{Name: cfg.App.Name, Version: cfg.App.Version}
 }
 
-// NewLogger creates a new logger instance.
+// NewLogger 创建 Logger。
 func NewLogger(cfg *config.Config) logger.Interface {
 	return logger.New(cfg.Log.Level)
 }
 
-// NewPostgres creates a new postgres connection with cleanup.
+// NewPostgres 创建 Postgres 连接并返回 cleanup。
 func NewPostgres(cfg *config.Config) (*postgres.Postgres, func(), error) {
 	pg, err := postgres.New(
 		cfg.Postgres.Host,
@@ -171,7 +180,7 @@ func NewPostgres(cfg *config.Config) (*postgres.Postgres, func(), error) {
 	return pg, cleanup, nil
 }
 
-// NewRedis creates a new redis connection with cleanup.
+// NewRedis 创建 Redis 连接并返回 cleanup。
 func NewRedis(cfg *config.Config) (*redis.Redis, func(), error) {
 	rdb, err := redis.New(cfg.Redis.Host, cfg.Redis.Port, cfg.Redis.Password, cfg.Redis.DB)
 	if err != nil {
@@ -181,7 +190,7 @@ func NewRedis(cfg *config.Config) (*redis.Redis, func(), error) {
 	return rdb, cleanup, nil
 }
 
-// NewMinioClient initializes MinIO client and ensures default bucket exists.
+// NewMinioClient 创建 MinIO Client 并确保默认 bucket 存在。
 func NewMinioClient(cfg *config.Config) (*minio.Client, error) {
 	cli, err := minio2.New(
 		cfg.MinIO.Endpoint,
@@ -274,8 +283,12 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 	return cache.NewAdminTwoFARedisStore(r)
 }
 
-func NewObjectStore(cli *minio.Client) repo.ObjectStore {
-	return storage.NewMinioStore(cli)
+func NewObjectStore(cfg *config.Config, cli *minio.Client) (repo.ObjectStore, error) {
+	provider := cfg.File.Provider
+	if provider == "" || provider == "minio" {
+		return storage.NewMinioStore(cli, cfg.File.PublicBaseURL), nil
+	}
+	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)
 }
 
 func NewEmailSender(cfg *config.Config) repo.EmailSender {
@@ -390,7 +403,7 @@ func SetupHTTPServer(
 	return srv
 }
 
-// ProviderSet is the Wire provider set for the application.
+// ProviderSet Wire ProviderSet。
 var ProviderSet = wire.NewSet(
 
 	NewAppInfo,

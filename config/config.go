@@ -15,6 +15,7 @@ type (
 		Postgres Postgres `mapstructure:"postgres"`
 		Redis    Redis    `mapstructure:"redis"`
 		MinIO    MinIO    `mapstructure:"minio"`
+		File     File     `mapstructure:"file_storage"`
 		Captcha  Captcha  `mapstructure:"captcha"`
 		SMTP     SMTP     `mapstructure:"smtp"`
 		JWT      JWT      `mapstructure:"jwt"`
@@ -64,6 +65,11 @@ type (
 		UseSSL    bool   `mapstructure:"use_ssl"`
 		Bucket    string `mapstructure:"bucket"`
 		Region    string `mapstructure:"region"`
+	}
+
+	File struct {
+		Provider      string `mapstructure:"provider"`
+		PublicBaseURL string `mapstructure:"public_base_url"`
 	}
 
 	Captcha struct {

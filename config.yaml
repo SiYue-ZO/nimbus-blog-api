@@ -34,6 +34,10 @@ minio:
   bucket: nimbus-files
   region: ""
 
+file_storage:
+  provider: minio
+  public_base_url: http://localhost:9000
+
 captcha:
   height: 80
   width: 240

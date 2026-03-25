@@ -1,9 +1,7 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -29,17 +27,6 @@ func (r *V1) getFileURL(ctx fiber.Ctx) error {
 	if err != nil {
 		r.logger.Error(err, "http - v1 - file - getFileURL - usecase")
 		return sharedresp.WriteError(ctx, http.StatusBadGateway, response.ErrorGetFileURLFailed, "failed to get file url")
-	}
-	if u, perr := url.Parse(dl); perr == nil {
-		proto := ctx.Get("X-Forwarded-Proto")
-		if proto == "" {
-			proto = "http"
-		}
-		host := ctx.Get("X-Forwarded-Host")
-		if host == "" {
-			host = ctx.Hostname()
-		}
-		dl = fmt.Sprintf("%s://%s/minio%s", proto, host, u.RequestURI())
 	}
 	return ctx.Redirect().Status(http.StatusTemporaryRedirect).To(dl)
 }
