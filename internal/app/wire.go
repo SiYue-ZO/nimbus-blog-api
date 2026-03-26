@@ -220,7 +220,7 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 func NewObjectStore(cfg *config.Config, cli *minioSDK.Client) (repo.ObjectStore, error) {
 	provider := cfg.File.Provider
 	if provider == "" || provider == "minio" {
-		return storage.NewMinioStore(cli, cfg.File.PublicBaseURL), nil
+		return storage.NewMinioStore(cli, cfg.MinIO.ExternalBaseURL, cfg.MinIO.Bucket), nil
 	}
 	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)
 }
@@ -297,8 +297,8 @@ func NewEmailUseCase(sender repo.EmailSender, codeStore repo.EmailCodeStore) use
 
 // File UseCase。
 
-func NewFileUseCase(cfg *config.Config, objectStore repo.ObjectStore, fileRepo repo.FileRepo) usecase.File {
-	return file.New(objectStore, fileRepo, cfg.MinIO.Bucket)
+func NewFileUseCase(objectStore repo.ObjectStore, fileRepo repo.FileRepo) usecase.File {
+	return file.New(objectStore, fileRepo)
 }
 
 // User UseCase。

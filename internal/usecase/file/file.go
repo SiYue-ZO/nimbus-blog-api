@@ -23,18 +23,17 @@ var (
 type useCase struct {
 	objects  repo.ObjectStore
 	fileRepo repo.FileRepo
-	bucket   string
 }
 
 // New 创建 File UseCase。
-func New(objects repo.ObjectStore, fileRepo repo.FileRepo, bucket string) usecase.File {
-	return &useCase{objects: objects, fileRepo: fileRepo, bucket: bucket}
+func New(objects repo.ObjectStore, fileRepo repo.FileRepo) usecase.File {
+	return &useCase{objects: objects, fileRepo: fileRepo}
 }
 
 // ObjectStorage 对象存储（MinIO）。
 
 func (u *useCase) GenerateUploadURL(ctx context.Context, key string, expires time.Duration, contentType string) (string, error) {
-	url, err := u.objects.PresignUpload(ctx, u.bucket, key, expires, contentType)
+	url, err := u.objects.PresignUpload(ctx, key, expires, contentType)
 	if err != nil {
 		return "", fmt.Errorf("%w: %v", ErrStorage, err)
 	}
@@ -42,7 +41,7 @@ func (u *useCase) GenerateUploadURL(ctx context.Context, key string, expires tim
 }
 
 func (u *useCase) GetFileURL(ctx context.Context, key string, expires time.Duration) (string, error) {
-	url, err := u.objects.PresignDownload(ctx, u.bucket, key, expires)
+	url, err := u.objects.PresignDownload(ctx, key, expires)
 	if err != nil {
 		return "", fmt.Errorf("%w: %v", ErrStorage, err)
 	}
@@ -50,7 +49,7 @@ func (u *useCase) GetFileURL(ctx context.Context, key string, expires time.Durat
 }
 
 func (u *useCase) DeleteObject(ctx context.Context, key string) error {
-	if err := u.objects.Delete(ctx, u.bucket, key); err != nil {
+	if err := u.objects.Delete(ctx, key); err != nil {
 		return fmt.Errorf("%w: %v", ErrStorage, err)
 	}
 	return nil
@@ -133,7 +132,7 @@ func (u *useCase) ClearResourceByUsage(ctx context.Context, usage string, resour
 }
 
 func (u *useCase) DeleteWithMeta(ctx context.Context, objectKey string) error {
-	if err := u.objects.Delete(ctx, u.bucket, objectKey); err != nil {
+	if err := u.objects.Delete(ctx, objectKey); err != nil {
 		return fmt.Errorf("%w: %v", ErrStorage, err)
 	}
 	if err := u.fileRepo.DeleteByObjectKey(ctx, objectKey); err != nil {

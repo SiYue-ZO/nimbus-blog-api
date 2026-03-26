@@ -15,30 +15,31 @@ import (
 type minioStore struct {
 	cli           *minio.Client
 	publicBaseURL string
+	bucket        string
 }
 
-func NewMinioStore(cli *minio.Client, publicBaseURL string) repo.ObjectStore {
-	return &minioStore{cli: cli, publicBaseURL: publicBaseURL}
+func NewMinioStore(cli *minio.Client, publicBaseURL string, bucket string) repo.ObjectStore {
+	return &minioStore{cli: cli, publicBaseURL: publicBaseURL, bucket: bucket}
 }
 
-func (s *minioStore) PresignUpload(ctx context.Context, bucket, key string, expires time.Duration, _ string) (string, error) {
-	u, err := s.cli.PresignedPutObject(ctx, bucket, key, expires)
+func (s *minioStore) PresignUpload(ctx context.Context, key string, expires time.Duration, _ string) (string, error) {
+	u, err := s.cli.PresignedPutObject(ctx, s.bucket, key, expires)
 	if err != nil {
 		return "", fmt.Errorf("MinioStore - PresignUpload - PresignedPutObject: %w", err)
 	}
 	return rewriteToPublicBaseURL(u, s.publicBaseURL)
 }
 
-func (s *minioStore) PresignDownload(ctx context.Context, bucket, key string, expires time.Duration) (string, error) {
-	u, err := s.cli.PresignedGetObject(ctx, bucket, key, expires, nil)
+func (s *minioStore) PresignDownload(ctx context.Context, key string, expires time.Duration) (string, error) {
+	u, err := s.cli.PresignedGetObject(ctx, s.bucket, key, expires, nil)
 	if err != nil {
 		return "", fmt.Errorf("MinioStore - PresignDownload - PresignedGetObject: %w", err)
 	}
 	return rewriteToPublicBaseURL(u, s.publicBaseURL)
 }
 
-func (s *minioStore) Delete(ctx context.Context, bucket, key string) error {
-	if err := s.cli.RemoveObject(ctx, bucket, key, minio.RemoveObjectOptions{}); err != nil {
+func (s *minioStore) Delete(ctx context.Context, key string) error {
+	if err := s.cli.RemoveObject(ctx, s.bucket, key, minio.RemoveObjectOptions{}); err != nil {
 		return fmt.Errorf("MinioStore - Delete - RemoveObject: %w", err)
 	}
 	return nil
@@ -50,10 +51,10 @@ func rewriteToPublicBaseURL(raw *url.URL, publicBaseURL string) (string, error) 
 	}
 	base, err := url.Parse(publicBaseURL)
 	if err != nil {
-		return "", fmt.Errorf("MinioStore - rewriteToPublicBaseURL - parse public_base_url: %w", err)
+		return "", fmt.Errorf("MinioStore - rewriteToPublicBaseURL - parse external_base_url: %w", err)
 	}
 	if base.Scheme == "" || base.Host == "" {
-		return "", fmt.Errorf("MinioStore - rewriteToPublicBaseURL - invalid public_base_url")
+		return "", fmt.Errorf("MinioStore - rewriteToPublicBaseURL - invalid external_base_url")
 	}
 
 	u := *base

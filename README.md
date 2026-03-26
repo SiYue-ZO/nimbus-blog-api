@@ -93,9 +93,11 @@ MinIO 初始化建议：
 - 配置文件：[config.yaml](./config.yaml)
 - 配置结构体：[config/config.go](./config/config.go)
 
-文件存储对外访问地址（`file_storage.public_base_url`）：
-- 本地 MinIO：`http://localhost:9000`（默认）
-- 使用本地 MinIO 之外的其他服务：改为你的自定义存储域名（CDN/对象存储网关域名）
+MinIO 对外访问基址（`minio.external_base_url`）：
+- 用途：API 对外返回的“可访问 URL”会基于该地址进行改写（解决 `minio.endpoint` 使用内网地址/localhost 导致前端拿到的 URL 不可访问的问题）
+- 本地开发：通常与 `minio.endpoint` 一致，例如 `http://localhost:9000`
+- 部署环境：
+  - 若 MinIO 只在内网可访问（例如 `minio.endpoint=minio:9000`），对外通过反向代理暴露为 `https://your-domain/minio`，则设置 `minio.external_base_url=https://your-domain/minio`
 
 建议在本地/测试环境也替换以下敏感项（不要把真实密钥提交到仓库）：
 - `postgres.password`

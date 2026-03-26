@@ -33,10 +33,10 @@ minio:
   use_ssl: false
   bucket: nimbus-files
   region: ""
+  external_base_url: http://localhost:9000
 
 file_storage:
   provider: minio
-  public_base_url: http://localhost:9000
 
 captcha:
   height: 80

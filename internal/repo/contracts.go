@@ -25,9 +25,9 @@ type (
 	}
 
 	ObjectStore interface {
-		PresignUpload(ctx context.Context, bucket, key string, expires time.Duration, contentType string) (string, error)
-		PresignDownload(ctx context.Context, bucket, key string, expires time.Duration) (string, error)
-		Delete(ctx context.Context, bucket, key string) error
+		PresignUpload(ctx context.Context, key string, expires time.Duration, contentType string) (string, error)
+		PresignDownload(ctx context.Context, key string, expires time.Duration) (string, error)
+		Delete(ctx context.Context, key string) error
 	}
 
 	AdminRepo interface {

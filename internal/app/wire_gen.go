@@ -92,7 +92,7 @@ func InitializeApp(cfg *config.Config) (*App, func(), error) {
 		return nil, nil, err
 	}
 	fileRepo := NewFileRepo(postgres)
-	file := NewFileUseCase(cfg, objectStore, fileRepo)
+	file := NewFileUseCase(objectStore, fileRepo)
 	user := NewUserUseCase(userRepo)
 	translationWebAPI := NewTranslationWebAPI()
 	llmWebAPI := NewLLMWebAPI(cfg)
@@ -286,7 +286,7 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 func NewObjectStore(cfg *config.Config, cli *minio.Client) (repo.ObjectStore, error) {
 	provider := cfg.File.Provider
 	if provider == "" || provider == "minio" {
-		return storage.NewMinioStore(cli, cfg.File.PublicBaseURL), nil
+		return storage.NewMinioStore(cli, cfg.MinIO.ExternalBaseURL, cfg.MinIO.Bucket), nil
 	}
 	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)
 }
@@ -351,8 +351,8 @@ func NewEmailUseCase(sender repo.EmailSender, codeStore repo.EmailCodeStore) use
 	return email.New(sender, codeStore)
 }
 
-func NewFileUseCase(cfg *config.Config, objectStore repo.ObjectStore, fileRepo repo.FileRepo) usecase.File {
-	return file.New(objectStore, fileRepo, cfg.MinIO.Bucket)
+func NewFileUseCase(objectStore repo.ObjectStore, fileRepo repo.FileRepo) usecase.File {
+	return file.New(objectStore, fileRepo)
 }
 
 func NewUserUseCase(userRepo repo.UserRepo) usecase.User {

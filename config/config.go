@@ -59,17 +59,17 @@ type (
 	}
 
 	MinIO struct {
-		Endpoint  string `mapstructure:"endpoint"`
-		AccessKey string `mapstructure:"access_key"`
-		SecretKey string `mapstructure:"secret_key"`
-		UseSSL    bool   `mapstructure:"use_ssl"`
-		Bucket    string `mapstructure:"bucket"`
-		Region    string `mapstructure:"region"`
+		Endpoint        string `mapstructure:"endpoint"`
+		AccessKey       string `mapstructure:"access_key"`
+		SecretKey       string `mapstructure:"secret_key"`
+		UseSSL          bool   `mapstructure:"use_ssl"`
+		Bucket          string `mapstructure:"bucket"`
+		Region          string `mapstructure:"region"`
+		ExternalBaseURL string `mapstructure:"external_base_url"`
 	}
 
 	File struct {
-		Provider      string `mapstructure:"provider"`
-		PublicBaseURL string `mapstructure:"public_base_url"`
+		Provider string `mapstructure:"provider"`
 	}
 
 	Captcha struct {
