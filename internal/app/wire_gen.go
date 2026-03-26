@@ -79,13 +79,7 @@ func InitializeApp(cfg *config.Config) (*App, func(), error) {
 	emailSender := NewEmailSender(cfg)
 	emailCodeStore := NewEmailCodeStore(redis)
 	email := NewEmailUseCase(emailSender, emailCodeStore)
-	client, err := NewMinioClient(cfg)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	objectStore, err := NewObjectStore(cfg, client)
+	objectStore, err := NewObjectStore(cfg)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -283,9 +277,13 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 	return cache.NewAdminTwoFARedisStore(r)
 }
 
-func NewObjectStore(cfg *config.Config, cli *minio.Client) (repo.ObjectStore, error) {
+func NewObjectStore(cfg *config.Config) (repo.ObjectStore, error) {
 	provider := cfg.File.Provider
 	if provider == "" || provider == "minio" {
+		cli, err := NewMinioClient(cfg)
+		if err != nil {
+			return nil, err
+		}
 		return storage.NewMinioStore(cli, cfg.MinIO.ExternalBaseURL, cfg.MinIO.Bucket), nil
 	}
 	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)

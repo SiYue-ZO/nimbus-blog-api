@@ -217,9 +217,13 @@ func NewAdminTwoFASetupStore(r *redis.Redis) repo.AdminTwoFASetupStore {
 
 // Storage Repo（对象存储）。
 
-func NewObjectStore(cfg *config.Config, cli *minioSDK.Client) (repo.ObjectStore, error) {
+func NewObjectStore(cfg *config.Config) (repo.ObjectStore, error) {
 	provider := cfg.File.Provider
 	if provider == "" || provider == "minio" {
+		cli, err := NewMinioClient(cfg)
+		if err != nil {
+			return nil, err
+		}
 		return storage.NewMinioStore(cli, cfg.MinIO.ExternalBaseURL, cfg.MinIO.Bucket), nil
 	}
 	return nil, fmt.Errorf("unsupported file storage provider: %s", provider)
